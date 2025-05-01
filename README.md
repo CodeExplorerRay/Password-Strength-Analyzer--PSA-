@@ -1,7 +1,8 @@
 # 🔒 Password Strength Analyzer
 A real-time password security assessment tool that evaluates your passwords against modern cracking techniques and known data breaches.
 
-![image](https://github.com/user-attachments/assets/48e153bc-00de-4bd4-ae37-fa26df9a4c64)
+![image](https://github.com/user-attachments/assets/83a89f23-4f3c-4f2d-85b2-f4e40a268c13)
+
 
 
 ## ✨ Features
