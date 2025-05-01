@@ -1,4 +1,4 @@
-echo "__pycache__/" >> .gitignore
-echo "venv/" >> .gitignore
-echo ".env" >> .gitignore
-.vercel
+# .gitignore
+.venv/
+__pycache__/
+*.pyc

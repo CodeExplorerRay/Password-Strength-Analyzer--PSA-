@@ -12,9 +12,7 @@ import re
 # Get absolute paths in a deployment-safe way
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-app = Flask(__name__,
-           static_folder=os.path.join(BASE_DIR, 'static'),
-           template_folder=os.path.join(BASE_DIR, 'public'))
+app = Flask(__name__,)
 
 # HIBP API (Breach Check)
 HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
