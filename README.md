@@ -1,7 +1,8 @@
 # 🔒 Password Strength Analyzer
 A real-time password security assessment tool that evaluates your passwords against modern cracking techniques and known data breaches.
 
-![image](https://github.com/user-attachments/assets/48e153bc-00de-4bd4-ae37-fa26df9a4c64)
+![image](https://github.com/user-attachments/assets/83a89f23-4f3c-4f2d-85b2-f4e40a268c13)
+
 
 
 ## ✨ Features
@@ -18,6 +19,21 @@ A real-time password security assessment tool that evaluates your passwords agai
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Security**: PBKDF2 hashing, HIBP API integration
 - **Deployment**: Vercel (Serverless) ready
+
+## ⚠️ DISCLAIMER: CYBER WEAPON CLASSIFICATION
+
+**THIS TOOL IS DESIGNED FOR ETHICAL SECURITY TESTING ONLY.**  
+
+- **Illegal use is strictly prohibited** - You are 100% responsible for your actions  
+- **No warranty** - May the void (∅) have mercy on your systems  
+- **Educational purpose** - Intended to expose password vulnerabilities, not exploit them  
+- **No liability** - If you nuke your own data, that's a *you* problem  
+- **HIBP API** follows [Have I Been Pwned's acceptable use policy](https://haveibeenpwned.com/API/v3#AcceptableUse)  
+
+**By using this software, you agree that:**  
+- You won't be a script kiddie  
+- You won't sue us when your weak password gets cracked in 0.3 seconds  
+- You acknowledge that [CodeExplorerRay](https://github.com/CodeExplorerRay) will mock you mercilessly for bad security practices
 
 ## 🌐 Live Demo
 Check out the live version:  
