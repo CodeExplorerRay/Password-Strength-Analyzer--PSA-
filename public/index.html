@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add to <head> of index.html -->
+<script>
+    // Anti-tampering (runs FIRST)
+    if (window.self !== window.top || /eval|debugger/.test(window.location.search)) {
+        document.body.innerHTML = `🚨 LOCKED 🚨`; 
+        throw new Error("NOPE.");
+    }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Analyzer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>∅ PASSWORD STRENGTH ANALYZER ∅</h1>
+        <p>Type a password. See how fast it dies.</p>
+        
+        <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
+        <div id="strengthMeter"></div>
+        
+        <div id="results">
+            <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
+            <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
+        </div>
+
+        <button id="generateBtn">Generate Strong Password</button>
+        <div id="generatedPassword"></div>
+
+        <div id="hackerSimulation">
+            <h3>HACKER SIMULATION:</h3>
+            <div id="crackAnimation"></div>
+        </div>
+    </div>
+
+    <script src="/static/crack.js"></script>
+</body>
+</html>

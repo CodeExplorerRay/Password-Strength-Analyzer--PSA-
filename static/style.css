@@ -1,0 +1,58 @@
+body {
+    font-family: 'Courier New', monospace;
+    background: #0a0a0a;
+    color: #00ff00;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #111;
+    color: #0f0;
+    border: 1px solid #333;
+}
+
+#strengthMeter {
+    height: 10px;
+    background: #222;
+    margin: 10px 0;
+    transition: all 0.3s;
+}
+
+#results {
+    margin: 20px 0;
+    text-align: left;
+}
+
+button {
+    background: #333;
+    color: #0f0;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #444;
+}
+
+#hackerSimulation {
+    margin-top: 30px;
+    border-top: 1px dashed #333;
+    padding-top: 20px;
+}
+
+#crackAnimation {
+    font-family: monospace;
+    white-space: pre;
+    text-align: left;
+}
