@@ -56,3 +56,56 @@ button:hover {
     white-space: pre;
     text-align: left;
 }
+
+.terminal-container {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 0 15px #ff000055;
+}
+
+.terminal-header {
+    background: #2a2a2a;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ff0000;
+}
+
+.red-dot, .yellow-dot, .green-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.red-dot { background: #ff5f56; }
+.yellow-dot { background: #ffbd2e; }
+.green-dot { background: #27c93f; }
+
+.terminal-header .title {
+    color: #aaa;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.terminal-body {
+    padding: 12px;
+    color: #0f0;
+    height: 150px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.terminal-body::after {
+    content: "█";
+    animation: blink 1s infinite;
+}
