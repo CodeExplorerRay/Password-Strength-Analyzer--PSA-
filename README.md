@@ -28,4 +28,4 @@ Check out the live version:
 **Deployment Note**: This application is hosted on [Render.com](https://render.com)'s free tier. Initial loading may take 30-60 seconds due to cold starts.
 
 ## 📜 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-/blob/main/License) file for details.
