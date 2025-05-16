@@ -1,8 +1,0 @@
-/password_strength_analyzer  
-│── /static  
-│   │── style.css  
-│   │── crack.js  
-│── /templates  
-│   │── index.html  
-│── app.py  
-│── requirements.txt  
