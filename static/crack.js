@@ -16,6 +16,28 @@ document.addEventListener('DOMContentLoaded', () => {
         generatedPasswordDiv: document.getElementById('generatedPassword'),
         crackAnimationDiv: document.getElementById('crackAnimation'),
         terminalTitle: document.getElementById('terminalTitle'),
+        favicon: document.getElementById('favicon'),
+        // Generator Options
+        lengthSlider: document.getElementById('lengthSlider'),
+        lengthValue: document.getElementById('lengthValue'),
+        includeUppercase: document.getElementById('includeUppercase'),
+        includeNumbers: document.getElementById('includeNumbers'),
+        includeSymbols: document.getElementById('includeSymbols'),
+    };
+
+    // --- Constants ---
+    const FAVICONS = {
+        default: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>∅</text></svg>",
+        weak: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ff5f56%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>❌</text></svg>",
+        medium: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ffbd2e%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>⚠️</text></svg>",
+        strong: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2327c93f%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>✅</text></svg>",
+    };
+
+    const CHARSETS = {
+        LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
+        UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        NUMBERS: "0123456789",
+        SYMBOLS: "!@#$%^&*()-_=+[]{}|;:,.<>?",
     };
 
     let debounceTimer;
@@ -45,25 +67,40 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.toggleVisibilityBtn.textContent = isPassword ? '🙈' : '👁️';
     });
 
+    UI.lengthSlider.addEventListener('input', (e) => {
+        UI.lengthValue.textContent = e.target.value;
+    });
+
     // --- Password Generation ---
     UI.generateBtn.addEventListener('click', () => {
-        currentGeneratedPassword = generateSecurePasswordClientSide(20);
+        const options = {
+            length: parseInt(UI.lengthSlider.value, 10),
+            uppercase: UI.includeUppercase.checked,
+            numbers: UI.includeNumbers.checked,
+            symbols: UI.includeSymbols.checked,
+        };
+
+        currentGeneratedPassword = generateSecurePasswordClientSide(options);
+        if (!currentGeneratedPassword) {
+            alert("Please select at least one character type for the password generator.");
+            return;
+        }
+
         UI.passwordInput.value = currentGeneratedPassword;
-        UI.charCounter.textContent = currentGeneratedPassword.length;
+        UI.passwordInput.dispatchEvent(new Event('input')); // Trigger analysis
         UI.generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
         UI.generatedPasswordDiv.style.display = 'block';
         UI.copyBtn.style.display = 'inline-block';
-        analyzePassword(currentGeneratedPassword);
     });
 
     // --- Copy to Clipboard ---
     UI.copyBtn.addEventListener('click', () => {
         if (currentGeneratedPassword) {
             navigator.clipboard.writeText(currentGeneratedPassword).then(() => {
-                const originalText = UI.copyBtn.innerHTML;
-                UI.copyBtn.innerHTML = '✅ Copied!';
+                const originalText = UI.copyBtn.textContent;
+                UI.copyBtn.textContent = '✅ Copied!';
                 setTimeout(() => {
-                    UI.copyBtn.innerHTML = originalText;
+                    UI.copyBtn.textContent = originalText;
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy password: ', err);
@@ -94,15 +131,22 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
         const score = strength.score;
         const width = (score + 1) * 20;
-        const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
+        const colors = ['var(--color-danger)', 'var(--color-danger)', 'var(--color-accent)', 'var(--color-success)', 'var(--color-success)'];
         UI.strengthBar.style.width = `${width}%`;
-        UI.strengthBar.style.backgroundColor = colors[score];
+        UI.strengthBar.style.backgroundColor = colors[score] || 'var(--color-danger)';
 
         // Update page title
         const strengthTextMap = {
             0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
         };
         document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
+
+        // Update favicon
+        const faviconMap = {
+            0: FAVICONS.weak, 1: FAVICONS.weak,
+            2: FAVICONS.medium, 3: FAVICONS.strong, 4: FAVICONS.strong
+        };
+        UI.favicon.href = faviconMap[score] || FAVICONS.default;
     }
 
     function updateRequirementIndicators(password) {
@@ -110,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { indicator: UI.lengthIndicator,    regex: /.{12,}/,       valid: password.length >= 12 },
             { indicator: UI.uppercaseIndicator, regex: /[A-Z]/,         valid: /[A-Z]/.test(password) },
             { indicator: UI.numberIndicator,    regex: /[0-9]/,         valid: /[0-9]/.test(password) },
-            { indicator: UI.symbolIndicator,    regex: /[^A-Za-z0-9]/, valid: /[^A-Za-z0-9]/.test(password) }
+            { indicator: UI.symbolIndicator,    regex: new RegExp(`[${CHARSETS.SYMBOLS.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}]`), valid: new RegExp(`[${CHARSETS.SYMBOLS.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}]`).test(password) }
         ];
 
         requirements.forEach(req => {
@@ -137,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetUI() {
         document.title = 'Password Strength Analyzer'; // Reset page title
+        UI.favicon.href = FAVICONS.default; // Reset favicon
         UI.strengthBar.style.width = '0%';
         UI.charCounter.textContent = '0';
         updateRequirementIndicators(""); // Reset all indicators
@@ -166,14 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Client-Side Password Generator ---
-    function generateSecurePasswordClientSide(length = 20) {
-        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
-        const randomValues = new Uint32Array(length);
+    function generateSecurePasswordClientSide(options) {
+        let charset = CHARSETS.LOWERCASE;
+        if (options.uppercase) charset += CHARSETS.UPPERCASE;
+        if (options.numbers) charset += CHARSETS.NUMBERS;
+        if (options.symbols) charset += CHARSETS.SYMBOLS;
+
+        if (charset === CHARSETS.LOWERCASE) return null; // Prevent generation with no options
+
+        const randomValues = new Uint32Array(options.length);
         window.crypto.getRandomValues(randomValues);
         let password = "";
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < options.length; i++) {
             password += charset[randomValues[i] % charset.length];
         }
+        // TODO: Ensure at least one character from each selected set is included.
         return password;
     }
 
