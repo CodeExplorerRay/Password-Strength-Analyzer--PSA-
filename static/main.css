@@ -1,0 +1,207 @@
+/* --- Base & Layout --- */
+body {
+    font-family: 'Courier New', monospace;
+    background: #0a0a0a;
+    color: #00ff00;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* --- Input & Buttons --- */
+.input-wrapper {
+    position: relative;
+    margin: 10px 0;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 50px; /* Make space for the button */
+    background: #111;
+    color: #0f0;
+    border: 1px solid #333;
+    box-sizing: border-box;
+}
+
+.visibility-toggle {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.visibility-toggle:hover {
+    opacity: 1;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+button {
+    background: #333;
+    color: #0f0;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background: #444;
+}
+
+/* --- Results & Strength Meter --- */
+#strengthMeter {
+    height: 10px;
+    background: #222;
+    margin: 10px 0;
+    transition: all 0.3s;
+}
+
+#results {
+    margin: 20px 0;
+    text-align: left;
+}
+
+#generatedPassword {
+    margin: 10px 0;
+    color: #ffbd2e; /* Yellow to stand out */
+}
+
+/* --- Hacker Simulation Terminal --- */
+#hackerSimulation {
+    margin-top: 30px;
+    border-top: 1px dashed #333;
+    padding-top: 20px;
+}
+
+.terminal-container {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 0 15px #ff000055;
+    text-align: left;
+}
+
+.terminal-header {
+    background: #2a2a2a;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ff0000;
+}
+
+.red-dot, .yellow-dot, .green-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.red-dot { background: #ff5f56; }
+.yellow-dot { background: #ffbd2e; }
+.green-dot { background: #27c93f; }
+
+.terminal-header .title {
+    color: #aaa;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.terminal-body {
+    padding: 12px;
+    color: #0f0;
+    height: 150px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap; /* Allow long lines to wrap */
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.terminal-body::after {
+    content: "█";
+    animation: blink 1s infinite;
+}
+
+/* --- Status & Simulation Message Styling --- */
+.pwned {
+    color: #ff5f56; /* Alarming Red */
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 7px #ff0000, 0 0 3px #ff0000;
+}
+
+.clear {
+    color: #27c93f; /* Reassuring Green */
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 7px #00ff00, 0 0 3px #00ff00;
+}
+
+.sim-progress {
+    color: #ffbd2e; /* Yellow for progress/status */
+}
+
+.sim-fail {
+    color: #ff5f56; /* Red for failure/cracked status */
+}
+
+/* --- Explanation Section --- */
+.explanation-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px dashed #333;
+    text-align: left;
+}
+
+.explanation-section h3 {
+    color: #ffbd2e; /* Yellow to stand out */
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.explanation-item {
+    margin-bottom: 20px;
+}
+
+.explanation-item h4 {
+    color: #00ff00;
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.explanation-item p {
+    color: #aaa;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}

@@ -34,20 +34,6 @@ def is_password_pwned(password):
     except:
         return False
 
-# Estimate Brute-Force Time
-def estimate_crack_time(password):
-    entropy = len(password) * 4  # Rough estimate
-    if entropy < 40:
-        return "INSTANT"
-    elif entropy < 60:
-        return "SECONDS"
-    elif entropy < 80:
-        return "HOURS"
-    elif entropy < 100:
-        return "YEARS"
-    else:
-        return "CENTURIES"
-
 # PBKDF2 Hash (For Demo)
 def hash_password(password):
     salt = os.urandom(16)
@@ -65,16 +51,20 @@ def hash_password(password):
 def home():
     return render_template('index.html')
 
-@app.route('/check', methods=['POST'])
-def check_password():
+@app.route('/check-breach', methods=['POST'])
+def check_breach():
     password = request.form['password']
+    if not password:
+        return jsonify({"error": "Password is required"}), 400
+
     breach = is_password_pwned(password)
-    crack_time = estimate_crack_time(password)
-    return jsonify({
-        "breach": breach,
-        "crack_time": crack_time,
-        "strength": len(password) * 4
-    })
+    return jsonify({"breach": breach})
+
+@app.route('/generate-password', methods=['GET'])
+def get_generated_password():
+    # It's better to generate passwords on the client, but if a backend endpoint is desired, this is how.
+    new_password = generate_password()
+    return jsonify({"password": new_password})
 
 # === STATIC FILES ===
 @app.route('/static/<path:filename>')

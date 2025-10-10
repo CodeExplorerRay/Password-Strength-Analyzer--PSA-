@@ -11,7 +11,7 @@ A real-time password security assessment tool that evaluates your passwords agai
 - **Dark web breach check** - Verifies against HaveIBeenPwned's database
 - **Live attack simulation** - Visual demonstration of cracking attempts
 - **Secure password generator** - Creates cryptographically strong passwords
-- **100% client-side processing** - No password storage or logging
+- **Privacy-focused** - Password analysis is done 100% in your browser. Only a non-identifiable part of the password's hash is used for the breach check.
 - **Responsive design** - Works on all devices
 
 ## 🛠️ Technologies Used

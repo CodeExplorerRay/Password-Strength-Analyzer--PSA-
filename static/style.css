@@ -12,6 +12,10 @@ body {
     text-align: center;
 }
 
+.input-wrapper {
+    position: relative;
+}
+
 input {
     width: 100%;
     padding: 10px;
@@ -19,6 +23,23 @@ input {
     background: #111;
     color: #0f0;
     border: 1px solid #333;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    padding-right: 50px; /* Make space for the button */
+}
+
+.visibility-toggle {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    opacity: 0.6;
 }
 
 #strengthMeter {

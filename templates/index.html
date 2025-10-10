@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Strength Analyzer</title>
-    <link rel="stylesheet" href="/static/yt.css">
+    <!-- Add zxcvbn library for client-side strength analysis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
+    <link rel="stylesheet" href="/static/main.css">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -13,7 +14,10 @@
         <h1>∅ PASSWORD STRENGTH ANALYZER ∅</h1>
         <p>Type a password. See how fast it dies.</p>
         
-        <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
+        <div class="input-wrapper">
+            <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
+            <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
+        </div>
         <div id="strengthMeter"></div>
         
         <div id="results">
@@ -21,7 +25,10 @@
             <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
         </div>
 
-        <button id="generateBtn">Generate Strong Password</button>
+        <div class="action-buttons">
+            <button id="generateBtn">Generate Strong Password</button>
+            <button id="copyBtn" title="Copy to Clipboard" style="display: none;">📋 Copy</button>
+        </div>
         <div id="generatedPassword"></div>
 
         <div id="hackerSimulation">
@@ -34,6 +41,18 @@
                     <span class="title">root@kali:~</span>
                 </div>
                 <div id="crackAnimation" class="terminal-body"></div>
+            </div>
+        </div>
+
+        <div class="explanation-section">
+            <h3>// WHAT DO THESE RESULTS MEAN?</h3>
+            <div class="explanation-item">
+                <h4>CRACK TIME</h4>
+                <p>This estimates how long it would take an attacker to guess your password using modern, offline cracking techniques (e.g., brute-force). A longer time is better. "Centuries" is ideal.</p>
+            </div>
+            <div class="explanation-item">
+                <h4>DARK WEB BREACH</h4>
+                <p>This checks if your exact password has appeared in a known data breach using the 'Have I Been Pwned' database. If it's "PWNED!", you should never use this password again as it's publicly available to hackers.</p>
             </div>
         </div>
 
