@@ -70,6 +70,11 @@ def get_generated_password():
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
+    
+@app.route('/robots.txt')
+def serve_robots():
+    # Correctly serve robots.txt from the project's root directory
+    return send_from_directory(os.path.join(BASE_DIR, 'Password-Strength-Analyzer--PSA-'), 'robots.txt')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

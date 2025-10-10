@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.psa-terminal.linkpc.net/static/sitemap.xml
