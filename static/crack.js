@@ -1,28 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById('passwordInput');
-    const toggleVisibilityBtn = document.getElementById('toggleVisibilityBtn');
-    const charCounter = document.getElementById('charCounter');
-    const strengthBar = document.getElementById('strengthBar');
-    const crackTimeSpan = document.getElementById('crackTime');
-    const breachStatusSpan = document.getElementById('breachStatus');
-    const lengthIndicator = document.getElementById('lengthIndicator');
-    const uppercaseIndicator = document.getElementById('uppercaseIndicator');
-    const numberIndicator = document.getElementById('numberIndicator');
-    const symbolIndicator = document.getElementById('symbolIndicator');
-    const generateBtn = document.getElementById('generateBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const generatedPasswordDiv = document.getElementById('generatedPassword');
-    const crackAnimationDiv = document.getElementById('crackAnimation');
-    const terminalTitle = document.getElementById('terminalTitle');
+    // Centralized DOM Element Selectors
+    const UI = {
+        passwordInput: document.getElementById('passwordInput'),
+        toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
+        charCounter: document.getElementById('charCounter'),
+        strengthBar: document.getElementById('strengthBar'),
+        crackTimeSpan: document.getElementById('crackTime'),
+        breachStatusSpan: document.getElementById('breachStatus'),
+        lengthIndicator: document.getElementById('lengthIndicator'),
+        uppercaseIndicator: document.getElementById('uppercaseIndicator'),
+        numberIndicator: document.getElementById('numberIndicator'),
+        symbolIndicator: document.getElementById('symbolIndicator'),
+        generateBtn: document.getElementById('generateBtn'),
+        copyBtn: document.getElementById('copyBtn'),
+        generatedPasswordDiv: document.getElementById('generatedPassword'),
+        crackAnimationDiv: document.getElementById('crackAnimation'),
+        terminalTitle: document.getElementById('terminalTitle'),
+    };
 
     let debounceTimer;
     let currentGeneratedPassword = '';
     let simulationTimeout;
 
     // --- Main Event Listeners ---
-    passwordInput.addEventListener('input', () => {
-        const password = passwordInput.value;
-        charCounter.textContent = password.length; // Update character count
+    UI.passwordInput.addEventListener('input', () => {
+        const password = UI.passwordInput.value;
+        UI.charCounter.textContent = password.length; // Update character count
         updateRequirementIndicators(password); // Update all indicators
 
         resetBreachAndCrackTime();
@@ -36,31 +39,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
-    toggleVisibilityBtn.addEventListener('click', () => {
-        const isPassword = passwordInput.type === 'password';
-        passwordInput.type = isPassword ? 'text' : 'password';
-        toggleVisibilityBtn.textContent = isPassword ? '🙈' : '👁️';
+    UI.toggleVisibilityBtn.addEventListener('click', () => {
+        const isPassword = UI.passwordInput.type === 'password';
+        UI.passwordInput.type = isPassword ? 'text' : 'password';
+        UI.toggleVisibilityBtn.textContent = isPassword ? '🙈' : '👁️';
     });
 
     // --- Password Generation ---
-    generateBtn.addEventListener('click', () => {
+    UI.generateBtn.addEventListener('click', () => {
         currentGeneratedPassword = generateSecurePasswordClientSide(20);
-        passwordInput.value = currentGeneratedPassword;
-        charCounter.textContent = currentGeneratedPassword.length;
-        generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
-        generatedPasswordDiv.style.display = 'block';
-        copyBtn.style.display = 'inline-block';
+        UI.passwordInput.value = currentGeneratedPassword;
+        UI.charCounter.textContent = currentGeneratedPassword.length;
+        UI.generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
+        UI.generatedPasswordDiv.style.display = 'block';
+        UI.copyBtn.style.display = 'inline-block';
         analyzePassword(currentGeneratedPassword);
     });
 
     // --- Copy to Clipboard ---
-    copyBtn.addEventListener('click', () => {
+    UI.copyBtn.addEventListener('click', () => {
         if (currentGeneratedPassword) {
             navigator.clipboard.writeText(currentGeneratedPassword).then(() => {
-                const originalText = copyBtn.innerHTML;
-                copyBtn.innerHTML = '✅ Copied!';
+                const originalText = UI.copyBtn.innerHTML;
+                UI.copyBtn.innerHTML = '✅ Copied!';
                 setTimeout(() => {
-                    copyBtn.innerHTML = originalText;
+                    UI.copyBtn.innerHTML = originalText;
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy password: ', err);
@@ -79,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateBreachUI(breachResponse.breach);
         } catch (error) {
             console.error('Breach check failed:', error);
-            breachStatusSpan.textContent = 'Error';
-            breachStatusSpan.className = 'error';
+            UI.breachStatusSpan.textContent = 'Error';
+            UI.breachStatusSpan.className = 'error';
         }
 
         startHackerSimulation(strength);
@@ -88,12 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- UI Update Functions ---
     function updateStrengthUI(strength) {
-        crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
+        UI.crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
         const score = strength.score;
         const width = (score + 1) * 20;
         const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
-        strengthBar.style.width = `${width}%`;
-        strengthBar.style.backgroundColor = colors[score];
+        UI.strengthBar.style.width = `${width}%`;
+        UI.strengthBar.style.backgroundColor = colors[score];
 
         // Update page title
         const strengthTextMap = {
@@ -104,10 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateRequirementIndicators(password) {
         const requirements = [
-            { indicator: lengthIndicator,    regex: /.{12,}/,       valid: password.length >= 12 },
-            { indicator: uppercaseIndicator, regex: /[A-Z]/,         valid: /[A-Z]/.test(password) },
-            { indicator: numberIndicator,    regex: /[0-9]/,         valid: /[0-9]/.test(password) },
-            { indicator: symbolIndicator,    regex: /[^A-Za-z0-9]/, valid: /[^A-Za-z0-9]/.test(password) }
+            { indicator: UI.lengthIndicator,    regex: /.{12,}/,       valid: password.length >= 12 },
+            { indicator: UI.uppercaseIndicator, regex: /[A-Z]/,         valid: /[A-Z]/.test(password) },
+            { indicator: UI.numberIndicator,    regex: /[0-9]/,         valid: /[0-9]/.test(password) },
+            { indicator: UI.symbolIndicator,    regex: /[^A-Za-z0-9]/, valid: /[^A-Za-z0-9]/.test(password) }
         ];
 
         requirements.forEach(req => {
@@ -124,31 +127,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateBreachUI(isPwned) {
         if (isPwned) {
-            breachStatusSpan.textContent = 'PWNED! FOUND IN A DATA BREACH.';
-            breachStatusSpan.className = 'pwned';
+            UI.breachStatusSpan.textContent = 'PWNED! FOUND IN A DATA BREACH.';
+            UI.breachStatusSpan.className = 'pwned';
         } else {
-            breachStatusSpan.textContent = 'CLEAR. NOT FOUND IN KNOWN BREACHES.';
-            breachStatusSpan.className = 'clear';
+            UI.breachStatusSpan.textContent = 'CLEAR. NOT FOUND IN KNOWN BREACHES.';
+            UI.breachStatusSpan.className = 'clear';
         }
     }
 
     function resetUI() {
         document.title = 'Password Strength Analyzer'; // Reset page title
-        strengthBar.style.width = '0%';
-        charCounter.textContent = '0';
+        UI.strengthBar.style.width = '0%';
+        UI.charCounter.textContent = '0';
         updateRequirementIndicators(""); // Reset all indicators
         resetBreachAndCrackTime();
         clearTimeout(simulationTimeout);
-        crackAnimationDiv.innerHTML = '';
-        generatedPasswordDiv.style.display = 'none';
-        copyBtn.style.display = 'none';
+        UI.crackAnimationDiv.innerHTML = '';
+        UI.generatedPasswordDiv.style.display = 'none';
+        UI.copyBtn.style.display = 'none';
         currentGeneratedPassword = '';
     }
     
     function resetBreachAndCrackTime() {
-        crackTimeSpan.textContent = '—';
-        breachStatusSpan.textContent = '—';
-        breachStatusSpan.className = '';
+        UI.crackTimeSpan.textContent = '—';
+        UI.breachStatusSpan.textContent = '—';
+        UI.breachStatusSpan.className = '';
     }
 
     // --- API Call ---
@@ -177,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Enhanced Hacker Simulation ---
     function startHackerSimulation(strength) {
         clearTimeout(simulationTimeout);
-        crackAnimationDiv.innerHTML = '';
+        UI.crackAnimationDiv.innerHTML = '';
         const { score, password } = strength;
         
         const typeLine = (text, className = '', initialDelay = 0) => {
@@ -185,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 simulationTimeout = setTimeout(() => {
                     const p = document.createElement('p');
                     if (className) p.className = className;
-                    crackAnimationDiv.appendChild(p);
+                    UI.crackAnimationDiv.appendChild(p);
 
                     let i = 0;
                     const typingSpeed = 25; // ms per character
@@ -193,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const typeChar = () => {
                         if (i < text.length) {
                             p.textContent += text.charAt(i);
-                            crackAnimationDiv.scrollTop = crackAnimationDiv.scrollHeight;
+                            UI.crackAnimationDiv.scrollTop = UI.crackAnimationDiv.scrollHeight;
                             i++;
                             simulationTimeout = setTimeout(typeChar, typingSpeed);
                         } else {
@@ -239,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://api.ipify.org?format=json');
             if (!response.ok) throw new Error('Failed to fetch IP address');
             const data = await response.json();
-            terminalTitle.textContent = `user@${data.ip}:~`;
+            UI.terminalTitle.textContent = `user@${data.ip}:~`;
         } catch (error) {
             console.error('Could not set dynamic terminal title:', error);
         }
