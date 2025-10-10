@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const strengthBar = document.getElementById('strengthBar');
     const crackTimeSpan = document.getElementById('crackTime');
     const breachStatusSpan = document.getElementById('breachStatus');
+    const lengthIndicator = document.getElementById('lengthIndicator');
+    const uppercaseIndicator = document.getElementById('uppercaseIndicator');
+    const numberIndicator = document.getElementById('numberIndicator');
+    const symbolIndicator = document.getElementById('symbolIndicator');
     const generateBtn = document.getElementById('generateBtn');
     const copyBtn = document.getElementById('copyBtn');
     const generatedPasswordDiv = document.getElementById('generatedPassword');
@@ -19,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordInput.addEventListener('input', () => {
         const password = passwordInput.value;
         charCounter.textContent = password.length; // Update character count
+        updateRequirementIndicators(password); // Update all indicators
 
         resetBreachAndCrackTime();
         clearTimeout(debounceTimer);
@@ -89,6 +94,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
         strengthBar.style.width = `${width}%`;
         strengthBar.style.backgroundColor = colors[score];
+
+        // Update page title
+        const strengthTextMap = {
+            0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
+        };
+        document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
+    }
+
+    function updateRequirementIndicators(password) {
+        const requirements = [
+            { indicator: lengthIndicator,    regex: /.{12,}/,       valid: password.length >= 12 },
+            { indicator: uppercaseIndicator, regex: /[A-Z]/,         valid: /[A-Z]/.test(password) },
+            { indicator: numberIndicator,    regex: /[0-9]/,         valid: /[0-9]/.test(password) },
+            { indicator: symbolIndicator,    regex: /[^A-Za-z0-9]/, valid: /[^A-Za-z0-9]/.test(password) }
+        ];
+
+        requirements.forEach(req => {
+            const icon = req.indicator.querySelector('.indicator-icon');
+            if (req.valid) {
+                req.indicator.classList.add('valid');
+                icon.textContent = '✅';
+            } else {
+                req.indicator.classList.remove('valid');
+                icon.textContent = '❌';
+            }
+        });
     }
 
     function updateBreachUI(isPwned) {
@@ -102,8 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetUI() {
+        document.title = 'Password Strength Analyzer'; // Reset page title
         strengthBar.style.width = '0%';
         charCounter.textContent = '0';
+        updateRequirementIndicators(""); // Reset all indicators
         resetBreachAndCrackTime();
         clearTimeout(simulationTimeout);
         crackAnimationDiv.innerHTML = '';
@@ -146,42 +179,54 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(simulationTimeout);
         crackAnimationDiv.innerHTML = '';
         const { score, password } = strength;
-
-        const addLine = (text, className = '', delay) => {
+        
+        const typeLine = (text, className = '', initialDelay = 0) => {
             return new Promise(resolve => {
                 simulationTimeout = setTimeout(() => {
                     const p = document.createElement('p');
-                    p.textContent = text;
                     if (className) p.className = className;
                     crackAnimationDiv.appendChild(p);
-                    crackAnimationDiv.scrollTop = crackAnimationDiv.scrollHeight;
-                    resolve();
-                }, delay);
+
+                    let i = 0;
+                    const typingSpeed = 25; // ms per character
+
+                    const typeChar = () => {
+                        if (i < text.length) {
+                            p.textContent += text.charAt(i);
+                            crackAnimationDiv.scrollTop = crackAnimationDiv.scrollHeight;
+                            i++;
+                            simulationTimeout = setTimeout(typeChar, typingSpeed);
+                        } else {
+                            resolve();
+                        }
+                    };
+                    typeChar();
+                }, initialDelay);
             });
         };
 
         const run = async () => {
-            await addLine('> Initializing hashcat v6.2.5...', '', 0);
-            await addLine('> Hash.Type........: NTLM (common web hash)', 'sim-progress', 500);
+            await typeLine('> Initializing hashcat v6.2.5...', '', 0);
+            await typeLine('> Hash.Type........: NTLM (common web hash)', 'sim-progress', 500);
 
             if (score <= 1) {
-                await addLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await addLine('> STATUS: CRACKED', 'sim-fail', 600);
-                await addLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
+                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
+                await typeLine('> STATUS: CRACKED', 'sim-fail', 600);
+                await typeLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
             } else if (score === 2) {
-                await addLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await addLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
-                await addLine('> Switching to rule-based attack (best64.rule)...', '', 500);
-                await addLine('> STATUS: CRACKED', 'sim-fail', 1200);
-                await addLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
+                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
+                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
+                await typeLine('> Switching to rule-based attack (best64.rule)...', '', 500);
+                await typeLine('> STATUS: CRACKED', 'sim-fail', 1200);
+                await typeLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
             } else {
-                await addLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await addLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
-                await addLine('> Switching to rule-based attack (best64.rule)...', '', 500);
-                await addLine('> STATUS: EXHAUSTED', 'sim-progress', 1200);
-                await addLine('> Switching to brute-force (mask attack)...', '', 500);
-                await addLine(`> Estimated.Time...: ${strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase()}`, 'sim-progress', 800);
-                await addLine('>> ATTACK ABORTED. TOO COMPLEX.', 'clear', 500);
+                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
+                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
+                await typeLine('> Switching to rule-based attack (best64.rule)...', '', 500);
+                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1200);
+                await typeLine('> Switching to brute-force (mask attack)...', '', 500);
+                await typeLine(`> Estimated.Time...: ${strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase()}`, 'sim-progress', 800);
+                await typeLine('>> ATTACK ABORTED. TOO COMPLEX.', 'clear', 500);
             }
         };
 

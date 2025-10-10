@@ -42,6 +42,19 @@ body::after {
     pointer-events: none; /* Allow clicks to pass through */
     animation: scanline-scroll 8s linear infinite;
 }
+
+/* Vignette Overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    z-index: 9998;
+    pointer-events: none;
+}
 .container {
     max-width: 600px;
     margin: 0 auto;
@@ -218,6 +231,21 @@ button:hover {
     font-weight: bold;
     text-transform: uppercase;
     text-shadow: 0 0 7px #00ff00, 0 0 3px #00ff00;
+}
+
+.indicator-icon {
+    display: inline-block; /* Allows for transform */
+    color: #ff5f56; /* Red by default */
+    transition: color 0.4s, transform 0.4s;
+}
+
+.requirement-item {
+    color: #aaa;
+    transition: color 0.4s;
+}
+
+.requirement-item.valid {
+    color: #27c93f; /* Green when valid */
 }
 
 .sim-progress {
