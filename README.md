@@ -11,7 +11,9 @@
 
 A real-time password security assessment tool that evaluates your passwords against modern cracking techniques and known data breaches.
 
-## ✨ Features
+<p align="center">
+  <img src="assets/psa-demo.gif" alt="Password Strength Analyzer Demo">
+</p>
 
 - **Brute-force time estimation** - See how long it would take to crack your password
 - **Dark web breach check** - Verifies against HaveIBeenPwned's database
