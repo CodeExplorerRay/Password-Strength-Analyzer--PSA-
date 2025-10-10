@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const strengthBar = document.getElementById('strengthBar');
     const crackTimeSpan = document.getElementById('crackTime');
     const breachStatusSpan = document.getElementById('breachStatus');
-    const lengthIndicator = document.getElementById('lengthIndicator');
     const generateBtn = document.getElementById('generateBtn');
     const copyBtn = document.getElementById('copyBtn');
     const generatedPasswordDiv = document.getElementById('generatedPassword');
@@ -20,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordInput.addEventListener('input', () => {
         const password = passwordInput.value;
         charCounter.textContent = password.length; // Update character count
-        updateLengthIndicator(password.length); // Update length indicator
 
         resetBreachAndCrackTime();
         clearTimeout(debounceTimer);
@@ -91,25 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
         strengthBar.style.width = `${width}%`;
         strengthBar.style.backgroundColor = colors[score];
-
-        // Update page title
-        const strengthTextMap = {
-            0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
-        };
-        document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
-    }
-
-    function updateLengthIndicator(length) {
-        const minLength = 12;
-        const icon = lengthIndicator.querySelector('.indicator-icon');
-
-        if (length >= minLength) {
-            lengthIndicator.classList.add('valid');
-            icon.textContent = '✅';
-        } else {
-            lengthIndicator.classList.remove('valid');
-            icon.textContent = '❌';
-        }
     }
 
     function updateBreachUI(isPwned) {
@@ -123,10 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetUI() {
-        document.title = 'Password Strength Analyzer'; // Reset page title
         strengthBar.style.width = '0%';
         charCounter.textContent = '0';
-        updateLengthIndicator(0); // Reset length indicator
         resetBreachAndCrackTime();
         clearTimeout(simulationTimeout);
         crackAnimationDiv.innerHTML = '';
