@@ -67,6 +67,11 @@ def get_generated_password():
     new_password = generate_password()
     return jsonify({"password": new_password})
 
+@app.route('/robots.txt')
+def serve_robots():
+    # Correctly serve robots.txt from the project's root directory
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'robots.txt')
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
