@@ -4,8 +4,8 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   </a>
-  <a href="https://password-strength-analyzer-psa.onrender.com">
-    <img src="https://img.shields.io/badge/Render-Deployed-%23f5f5f5?logo=render&logoColor=46e3b7" alt="Render">
+  <a href="https://www.psa-terminal.linkpc.net/">
+    <img src="https://img.shields.io/badge/Status-Online-brightgreen" alt="Live Demo">
   </a>
 </p>
 
@@ -85,11 +85,7 @@ To get a local copy up and running, follow these simple steps.
 
 ## 🌐 Live Demo
 Check out the live version:  
-[![Render](https://img.shields.io/badge/Render-Deployed-%23f5f5f5?logo=render&logoColor=46e3b7)](https://password-strength-analyzer-psa.onrender.com)
-
----
-
-**Deployment Note**: This application is hosted on [Render.com](https://render.com)'s free tier. Initial loading may take 30-60 seconds due to cold starts.
+[![Live Demo](https://img.shields.io/badge/Status-Online-brightgreen)](https://www.psa-terminal.linkpc.net/)
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-/blob/main/License) file for details.
