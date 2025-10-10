@@ -10,10 +10,21 @@
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
 </head>
 <body>
+    <header class="site-header">
+        <div class="header-title">
+            <h1>∅ PSA-TERMINAL ∅</h1>
+        </div>
+        <div class="header-status">
+            <span>SYSTEM STATUS:</span>
+            <span class="status-light status-online"></span>
+            <span>ONLINE</span>
+        </div>
+    </header>
     <div class="container">
-        <h1>∅ PASSWORD STRENGTH ANALYZER ∅</h1>
-        <p>Type a password. See how fast it dies.</p>
-        
+        <div class="mission-briefing">
+            <p><span class="briefing-title">MISSION BRIEFING:</span> This terminal provides critical intelligence on password vulnerabilities. By simulating modern attack vectors and cross-referencing with known breach data, it offers a real-time threat assessment. Use this intel to fortify your digital defenses. Your security is your responsibility.</p>
+        </div>
+
         <div class="input-wrapper">
             <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
             <span id="charCounter" class="char-counter">0</span>
