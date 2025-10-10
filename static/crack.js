@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         generatedPasswordDiv: document.getElementById('generatedPassword'),
         crackAnimationDiv: document.getElementById('crackAnimation'),
         terminalTitle: document.getElementById('terminalTitle'),
+        favicon: document.getElementById('favicon'),
         // Generator Options
         lengthSlider: document.getElementById('lengthSlider'),
         lengthValue: document.getElementById('lengthValue'),
@@ -20,13 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
         includeSymbols: document.getElementById('includeSymbols'),
     };
 
+    // --- Constants ---
     const CHARSETS = {
         LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
         UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         NUMBERS: "0123456789",
         SYMBOLS: "!@#$%^&*()-_=+[]{}|;:,.<>?",
     };
-    
+
     let debounceTimer;
     let currentGeneratedPassword = '';
     let simulationTimeout;
@@ -73,7 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         UI.passwordInput.value = currentGeneratedPassword;
-        UI.passwordInput.dispatchEvent(new Event('input')); // Trigger analysis
+        // Dispatch input event to trigger analysis and UI updates automatically
+        UI.passwordInput.dispatchEvent(new Event('input'));
+
         UI.generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
         UI.generatedPasswordDiv.style.display = 'block';
         UI.copyBtn.style.display = 'inline-block';
@@ -117,9 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
         const score = strength.score;
         const width = (score + 1) * 20;
-        const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
+        const colors = ['var(--color-danger)', 'var(--color-danger)', 'var(--color-accent)', 'var(--color-success)', 'var(--color-success)'];
         UI.strengthBar.style.width = `${width}%`;
-        UI.strengthBar.style.backgroundColor = colors[score];
+        UI.strengthBar.style.backgroundColor = colors[score] || 'var(--color-danger)';
+
+        // Update page title
+        const strengthTextMap = {
+            0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
+        };
+        document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
+
     }
 
     function updateBreachUI(isPwned) {
@@ -133,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetUI() {
+        document.title = 'Password Strength Analyzer'; // Reset page title
         UI.strengthBar.style.width = '0%';
         UI.charCounter.textContent = '0';
         resetBreachAndCrackTime();
@@ -179,9 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mandatoryChars.push(CHARSETS.SYMBOLS[Math.floor(Math.random() * CHARSETS.SYMBOLS.length)]);
         }
 
-        if (availableCharset === CHARSETS.LOWERCASE && !uppercase && !numbers && !symbols) {
-            // This case is valid if the user unchecks everything, so we generate a lowercase-only password.
-        }
+        if (availableCharset === CHARSETS.LOWERCASE && !uppercase && !numbers && !symbols) return null;
 
         const remainingLength = length - mandatoryChars.length;
         const randomValues = new Uint32Array(remainingLength);

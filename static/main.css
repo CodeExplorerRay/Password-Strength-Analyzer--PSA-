@@ -9,21 +9,45 @@
     100% { transform: translateY(100%); }
 }
 
+/* --- Color Palette & Theme --- */
+:root {
+    --color-bg: #0a0a0a;
+    --color-text: #00ff00;
+    --color-text-dim: #aaa;
+    --color-text-input: #0f0;
+    --color-accent: #ffbd2e;
+    --color-danger: #ff5f56;
+    --color-success: #27c93f;
+    --color-danger-glow: #ff0000;
+    --color-success-glow: #00ff00;
+    --color-bg-input: #111;
+    --color-bg-button: #333;
+    --color-bg-button-hover: #444;
+    --color-bg-meter: #222;
+    --color-bg-panel: rgba(26, 26, 26, 0.7);
+    --color-bg-terminal: #1a1a1a;
+    --color-bg-terminal-header: #2a2a2a;
+    --color-border: #333;
+    --color-border-accent: #ff0000;
+    --color-grid-lines: rgba(0, 255, 0, 0.05);
+    --color-scanline: rgba(0, 0, 0, 0.25);
+    --color-vignette: rgba(0,0,0,0.7);
+}
+
 /* --- Base & Layout --- */
 body {
     font-family: 'Courier New', monospace;
     position: relative; /* Required for the ::after pseudo-element */
     overflow-x: hidden; /* Prevent horizontal scrollbar from overlay */
-    color: #00ff00;
+    color: var(--color-text);
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
 
-    /* Animated grid background */
-    background-color: #0a0a0a;
+    background-color: var(--color-bg);
     background-image: 
-        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+        linear-gradient(var(--color-grid-lines) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-grid-lines) 1px, transparent 1px);
     background-size: 50px 50px;
     animation: animated-grid 4s linear infinite;
 }
@@ -36,7 +60,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(18, 16, 16, 0) 100%);
+    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 0%, var(--color-scanline) 50%, rgba(18, 16, 16, 0) 100%);
     background-size: 100% 4px;
     z-index: 9999;
     pointer-events: none; /* Allow clicks to pass through */
@@ -51,7 +75,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, var(--color-vignette) 100%);
     z-index: 9998;
     pointer-events: none;
 }
@@ -71,10 +95,16 @@ input {
     width: 100%;
     padding: 10px;
     padding-right: 85px; /* Make space for counter and toggle button */
-    background: #111;
-    color: #0f0;
-    border: 1px solid #333;
+    background: var(--color-bg-input);
+    color: var(--color-text-input);
+    border: 1px solid var(--color-border);
     box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: 0 0 10px var(--color-success-glow)55;
 }
 
 .char-counter {
@@ -82,7 +112,7 @@ input {
     right: 50px; /* Position to the left of the toggle button */
     top: 50%;
     transform: translateY(-50%);
-    color: #aaa;
+    color: var(--color-text-dim);
     font-size: 14px;
     font-weight: bold;
     pointer-events: none; /* Allow clicks to pass through to the input */
@@ -95,7 +125,7 @@ input {
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: #00ff00;
+    color: var(--color-text);
     font-size: 20px;
     cursor: pointer;
     padding: 5px;
@@ -116,8 +146,8 @@ input {
 }
 
 button {
-    background: #333;
-    color: #0f0;
+    background: var(--color-bg-button);
+    color: var(--color-text-input);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -126,17 +156,27 @@ button {
 }
 
 button:hover {
-    background: #444;
+    background: var(--color-bg-button-hover);
 }
 
 /* --- Generator Options --- */
 .generator-options {
-    background-color: rgba(26, 26, 26, 0.7);
+    background-color: transparent;
     border: 1px solid var(--color-border);
-    padding: 15px;
+    padding: 20px;
     margin: 20px 0;
     text-align: left;
-    border-left: 3px solid var(--color-accent);
+    position: relative;
+}
+
+.generator-options::before {
+    content: '// GENERATOR CONFIG //';
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background: var(--color-bg);
+    padding: 0 10px;
+    color: var(--color-accent);
 }
 
 .option-item {
@@ -152,7 +192,7 @@ button:hover {
 .option-item label {
     cursor: pointer;
     position: relative;
-    padding-left: 25px;
+    padding-left: 35px;
     color: var(--color-text-dim);
 }
 
@@ -161,7 +201,7 @@ button:hover {
 }
 
 .option-item label::before {
-    content: '[ ]';
+    
     position: absolute;
     left: 0;
     top: 50%;
@@ -207,7 +247,7 @@ input[type="range"]::-webkit-slider-thumb {
 /* --- Results & Strength Meter --- */
 .strength-meter-container {
     height: 10px;
-    background: #222;
+    background: var(--color-bg-meter);
     margin: 10px 0;
     border-radius: 5px;
     overflow: hidden; /* Ensures the inner bar's corners are clipped */
@@ -225,9 +265,9 @@ input[type="range"]::-webkit-slider-thumb {
     margin: 20px 0;
     padding: 15px;
     text-align: left;
-    background-color: rgba(26, 26, 26, 0.7);
+    background-color: var(--color-bg-panel);
     border: 1px solid var(--color-border);
-    border-left: 3px solid var(--color-accent);
+    
 }
 
 #results p {
@@ -241,31 +281,39 @@ input[type="range"]::-webkit-slider-thumb {
 
 #generatedPassword {
     margin: 10px 0;
-    color: #ffbd2e; /* Yellow to stand out */
+    color: var(--color-accent);
 }
 
 /* --- Hacker Simulation Terminal --- */
 #hackerSimulation {
     margin-top: 30px;
-    border-top: 1px dashed #333;
+    border-top: 1px dashed var(--color-border);
     padding-top: 20px;
 }
 
+/* Enhanced Section Header Style */
+#hackerSimulation h3 {
+    color: var(--color-accent);
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
 .terminal-container {
-    background: #1a1a1a;
+    background: var(--color-bg-terminal);
     border-radius: 8px;
     overflow: hidden;
     font-family: 'Courier New', monospace;
-    box-shadow: 0 0 15px #ff000055;
+    box-shadow: 0 0 15px var(--color-danger-glow)55;
     text-align: left;
 }
 
 .terminal-header {
-    background: #2a2a2a;
+    background: var(--color-bg-terminal-header);
     padding: 8px 12px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #ff0000;
+    border-bottom: 1px solid var(--color-border-accent);
 }
 
 .red-dot, .yellow-dot, .green-dot {
@@ -275,19 +323,19 @@ input[type="range"]::-webkit-slider-thumb {
     margin-right: 6px;
 }
 
-.red-dot { background: #ff5f56; }
-.yellow-dot { background: #ffbd2e; }
-.green-dot { background: #27c93f; }
+.red-dot { background: var(--color-danger); }
+.yellow-dot { background: var(--color-accent); }
+.green-dot { background: var(--color-success); }
 
 .terminal-header .title {
-    color: #aaa;
+    color: var(--color-text-dim);
     font-size: 12px;
     margin-left: 10px;
 }
 
 .terminal-body {
     padding: 12px;
-    color: #0f0;
+    color: var(--color-text-input);
     height: 150px;
     overflow-y: auto;
     font-size: 14px;
@@ -308,43 +356,43 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* --- Status & Simulation Message Styling --- */
 .pwned {
-    color: #ff5f56; /* Alarming Red */
+    color: var(--color-danger);
     font-weight: bold;
     text-transform: uppercase;
-    text-shadow: 0 0 7px #ff0000, 0 0 3px #ff0000;
+    text-shadow: 0 0 7px var(--color-danger-glow), 0 0 3px var(--color-danger-glow);
 }
 
 .clear {
-    color: #27c93f; /* Reassuring Green */
+    color: var(--color-success);
     font-weight: bold;
     text-transform: uppercase;
-    text-shadow: 0 0 7px #00ff00, 0 0 3px #00ff00;
+    text-shadow: 0 0 7px var(--color-success-glow), 0 0 3px var(--color-danger-glow);
 }
 
 .indicator-icon {
     display: inline-block; /* Allows for transform */
-    color: #ff5f56; /* Red by default */
+    color: var(--color-danger);
     transition: color 0.4s, transform 0.4s;
 }
 
 .sim-progress {
-    color: #ffbd2e; /* Yellow for progress/status */
+    color: var(--color-accent);
 }
 
 .sim-fail {
-    color: #ff5f56; /* Red for failure/cracked status */
+    color: var(--color-danger);
 }
 
 /* --- Explanation Section --- */
 .explanation-section {
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 1px dashed #333;
+    border-top: 1px dashed var(--color-border);
     text-align: left;
 }
 
 .explanation-section h3 {
-    color: #ffbd2e; /* Yellow to stand out */
+    color: var(--color-accent);
     font-size: 16px;
     margin-bottom: 20px;
 }
@@ -354,14 +402,14 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .explanation-item h4 {
-    color: #00ff00;
+    color: var(--color-text);
     margin: 0 0 5px 0;
     font-size: 14px;
     text-transform: uppercase;
 }
 
 .explanation-item p {
-    color: #aaa;
+    color: var(--color-text-dim);
     margin: 0;
     font-size: 14px;
     line-height: 1.5;
@@ -371,19 +419,19 @@ input[type="range"]::-webkit-slider-thumb {
 footer {
     margin-top: 50px;
     padding-top: 20px;
-    border-top: 1px dashed #333;
+    border-top: 1px dashed var(--color-border);
     text-align: center;
-    color: #aaa;
+    color: var(--color-text-dim);
     font-size: 14px;
 }
 
 footer a {
-    color: #00ff00;
+    color: var(--color-text);
     text-decoration: none;
     transition: text-shadow 0.2s;
 }
 
 footer a:hover {
     text-decoration: underline;
-    text-shadow: 0 0 5px #00ff00;
+    text-shadow: 0 0 5px var(--color-success-glow);
 }
