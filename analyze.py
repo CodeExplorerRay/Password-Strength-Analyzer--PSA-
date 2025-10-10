@@ -67,6 +67,11 @@ def serve_robots():
     # Correctly serve robots.txt from the project's root directory
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'robots.txt')
 
+@app.route('/sitemap.xml')
+def serve_sitemap():
+    # Correctly serve sitemap.xml from the static directory
+    return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'), 'sitemap.xml')
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
