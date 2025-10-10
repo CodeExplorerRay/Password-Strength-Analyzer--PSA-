@@ -1,11 +1,24 @@
+/* --- Keyframes for Animations --- */
+@keyframes animated-grid {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+}
+
 /* --- Base & Layout --- */
 body {
     font-family: 'Courier New', monospace;
-    background: #0a0a0a;
     color: #00ff00;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
+
+    /* Animated grid background */
+    background-color: #0a0a0a;
+    background-image: 
+        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: animated-grid 4s linear infinite;
 }
 
 .container {
