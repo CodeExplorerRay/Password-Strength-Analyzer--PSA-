@@ -205,3 +205,24 @@ button:hover {
     font-size: 14px;
     line-height: 1.5;
 }
+
+/* --- Footer --- */
+footer {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px dashed #333;
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+}
+
+footer a {
+    color: #00ff00;
+    text-decoration: none;
+    transition: text-shadow 0.2s;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 5px #00ff00;
+}
