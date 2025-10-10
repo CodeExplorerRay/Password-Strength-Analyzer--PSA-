@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Constants ---
+    const FAVICONS = {
+        default: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>∅</text></svg>",
+        weak: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ff5f56%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>❌</text></svg>",
+        medium: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ffbd2e%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>⚠️</text></svg>",
+        strong: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2327c93f%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>✅</text></svg>",
+    };
+
     const CHARSETS = {
         LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
         UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
@@ -131,6 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
 
+        // Update favicon
+        const faviconMap = {
+            0: FAVICONS.weak, 1: FAVICONS.weak,
+            2: FAVICONS.medium, 3: FAVICONS.strong, 4: FAVICONS.strong
+        };
+        UI.favicon.href = faviconMap[score] || FAVICONS.default;
+
     }
 
     function updateBreachUI(isPwned) {
@@ -145,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetUI() {
         document.title = 'Password Strength Analyzer'; // Reset page title
+        UI.favicon.href = FAVICONS.default; // Reset favicon
         UI.strengthBar.style.width = '0%';
         UI.charCounter.textContent = '0';
         resetBreachAndCrackTime();
