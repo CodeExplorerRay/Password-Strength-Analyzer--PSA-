@@ -9,44 +9,21 @@
     100% { transform: translateY(100%); }
 }
 
-/* --- Color Palette --- */
-:root {
-    --color-bg: #0a0a0a;
-    --color-text: #00ff00;
-    --color-text-dim: #aaa;
-    --color-text-input: #0f0;
-    --color-accent: #ffbd2e;
-    --color-danger: #ff5f56;
-    --color-success: #27c93f;
-    --color-danger-glow: #ff0000;
-    --color-success-glow: #00ff00;
-    --color-bg-input: #111;
-    --color-bg-button: #333;
-    --color-bg-button-hover: #444;
-    --color-bg-meter: #222;
-    --color-bg-terminal: #1a1a1a;
-    --color-bg-terminal-header: #2a2a2a;
-    --color-border: #333;
-    --color-border-accent: #ff0000;
-    --color-grid-lines: rgba(0, 255, 0, 0.05);
-    --color-scanline: rgba(0, 0, 0, 0.25);
-    --color-vignette: rgba(0,0,0,0.7);
-}
-
 /* --- Base & Layout --- */
 body {
     font-family: 'Courier New', monospace;
     position: relative; /* Required for the ::after pseudo-element */
     overflow-x: hidden; /* Prevent horizontal scrollbar from overlay */
-    color: var(--color-text);
+    color: #00ff00;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
 
-    background-color: var(--color-bg);
+    /* Animated grid background */
+    background-color: #0a0a0a;
     background-image: 
-        linear-gradient(var(--color-grid-lines) 1px, transparent 1px),
-        linear-gradient(90deg, var(--color-grid-lines) 1px, transparent 1px);
+        linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
     background-size: 50px 50px;
     animation: animated-grid 4s linear infinite;
 }
@@ -59,7 +36,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 0%, var(--color-scanline) 50%, rgba(18, 16, 16, 0) 100%);
+    background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(18, 16, 16, 0) 100%);
     background-size: 100% 4px;
     z-index: 9999;
     pointer-events: none; /* Allow clicks to pass through */
@@ -74,7 +51,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, var(--color-vignette) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
     z-index: 9998;
     pointer-events: none;
 }
@@ -94,9 +71,9 @@ input {
     width: 100%;
     padding: 10px;
     padding-right: 85px; /* Make space for counter and toggle button */
-    background: var(--color-bg-input);
-    color: var(--color-text-input);
-    border: 1px solid var(--color-border);
+    background: #111;
+    color: #0f0;
+    border: 1px solid #333;
     box-sizing: border-box;
 }
 
@@ -105,7 +82,7 @@ input {
     right: 50px; /* Position to the left of the toggle button */
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-text-dim);
+    color: #aaa;
     font-size: 14px;
     font-weight: bold;
     pointer-events: none; /* Allow clicks to pass through to the input */
@@ -118,7 +95,7 @@ input {
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: var(--color-text);
+    color: #00ff00;
     font-size: 20px;
     cursor: pointer;
     padding: 5px;
@@ -139,8 +116,8 @@ input {
 }
 
 button {
-    background: var(--color-bg-button);
-    color: var(--color-text-input);
+    background: #333;
+    color: #0f0;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -149,87 +126,13 @@ button {
 }
 
 button:hover {
-    background: var(--color-bg-button-hover);
-}
-
-/* --- Generator Options --- */
-.generator-options {
-    background-color: rgba(34, 34, 34, 0.5);
-    border: 1px solid var(--color-border);
-    padding: 15px;
-    margin: 20px 0;
-    text-align: left;
-}
-
-.option-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.option-item:last-child {
-    margin-bottom: 0;
-}
-
-.option-item label {
-    cursor: pointer;
-    position: relative;
-    padding-left: 25px;
-    color: var(--color-text-dim);
-}
-
-.option-item input[type="checkbox"] {
-    display: none; /* Hide default checkbox */
-}
-
-.option-item label::before {
-    content: '[ ]';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-text);
-    font-weight: bold;
-}
-
-.option-item input[type="checkbox"]:checked + label::before {
-    content: '[■]';
-    color: var(--color-success);
-}
-
-.length-slider {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.length-slider label {
-    padding-left: 0;
-    margin-bottom: 10px;
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 8px;
-    background: var(--color-bg-meter);
-    outline: none;
-    border: 1px solid var(--color-border);
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--color-success);
-    cursor: pointer;
-    box-shadow: 0 0 5px var(--color-success-glow);
+    background: #444;
 }
 
 /* --- Results & Strength Meter --- */
 .strength-meter-container {
     height: 10px;
-    background: var(--color-bg-meter);
+    background: #222;
     margin: 10px 0;
     border-radius: 5px;
     overflow: hidden; /* Ensures the inner bar's corners are clipped */
@@ -250,31 +153,31 @@ input[type="range"]::-webkit-slider-thumb {
 
 #generatedPassword {
     margin: 10px 0;
-    color: var(--color-accent);
+    color: #ffbd2e; /* Yellow to stand out */
 }
 
 /* --- Hacker Simulation Terminal --- */
 #hackerSimulation {
     margin-top: 30px;
-    border-top: 1px dashed var(--color-border);
+    border-top: 1px dashed #333;
     padding-top: 20px;
 }
 
 .terminal-container {
-    background: var(--color-bg-terminal);
+    background: #1a1a1a;
     border-radius: 8px;
     overflow: hidden;
     font-family: 'Courier New', monospace;
-    box-shadow: 0 0 15px var(--color-danger-glow)55;
+    box-shadow: 0 0 15px #ff000055;
     text-align: left;
 }
 
 .terminal-header {
-    background: var(--color-bg-terminal-header);
+    background: #2a2a2a;
     padding: 8px 12px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--color-border-accent);
+    border-bottom: 1px solid #ff0000;
 }
 
 .red-dot, .yellow-dot, .green-dot {
@@ -284,19 +187,19 @@ input[type="range"]::-webkit-slider-thumb {
     margin-right: 6px;
 }
 
-.red-dot { background: var(--color-danger); }
-.yellow-dot { background: var(--color-accent); }
-.green-dot { background: var(--color-success); }
+.red-dot { background: #ff5f56; }
+.yellow-dot { background: #ffbd2e; }
+.green-dot { background: #27c93f; }
 
 .terminal-header .title {
-    color: var(--color-text-dim);
+    color: #aaa;
     font-size: 12px;
     margin-left: 10px;
 }
 
 .terminal-body {
     padding: 12px;
-    color: var(--color-text-input);
+    color: #0f0;
     height: 150px;
     overflow-y: auto;
     font-size: 14px;
@@ -317,61 +220,52 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* --- Status & Simulation Message Styling --- */
 .pwned {
-    color: var(--color-danger);
+    color: #ff5f56; /* Alarming Red */
     font-weight: bold;
     text-transform: uppercase;
-    text-shadow: 0 0 7px var(--color-danger-glow), 0 0 3px var(--color-danger-glow);
+    text-shadow: 0 0 7px #ff0000, 0 0 3px #ff0000;
 }
 
 .clear {
-    color: var(--color-success);
+    color: #27c93f; /* Reassuring Green */
     font-weight: bold;
     text-transform: uppercase;
-    text-shadow: 0 0 7px var(--color-success-glow), 0 0 3px var(--color-success-glow);
+    text-shadow: 0 0 7px #00ff00, 0 0 3px #00ff00;
 }
 
 .indicator-icon {
     display: inline-block; /* Allows for transform */
-    color: var(--color-danger); /* Red by default */
+    color: #ff5f56; /* Red by default */
     transition: color 0.4s, transform 0.4s;
-    font-size: 1.2em; /* Make icon bigger */
-    vertical-align: middle;
-    margin-left: 8px;
 }
 
-.requirement-item {
-    color: var(--color-text-dim);
+#lengthIndicator {
+    color: #aaa;
     transition: color 0.4s;
-    font-size: 1.1em; /* Increase font size */
-    padding: 8px 12px;
-    background-color: rgba(34, 34, 34, 0.5); /* Faint background */
-    border-left: 2px solid var(--color-border);
-    margin-bottom: 6px !important; /* Override default p margin */
 }
 
-.requirement-item.valid {
-    color: var(--color-success); /* Green when valid */
-    border-left-color: var(--color-success);
+#lengthIndicator.valid {
+    color: #27c93f; /* Green when valid */
 }
 
 .sim-progress {
-    color: var(--color-accent);
+    color: #ffbd2e; /* Yellow for progress/status */
 }
 
 .sim-fail {
-    color: var(--color-danger);
+    color: #ff5f56; /* Red for failure/cracked status */
 }
 
 /* --- Explanation Section --- */
 .explanation-section {
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 1px dashed var(--color-border);
+    border-top: 1px dashed #333;
     text-align: left;
 }
 
 .explanation-section h3 {
-    color: var(--color-accent);
+    color: #ffbd2e; /* Yellow to stand out */
     font-size: 16px;
     margin-bottom: 20px;
 }
@@ -381,14 +275,14 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .explanation-item h4 {
-    color: var(--color-text);
+    color: #00ff00;
     margin: 0 0 5px 0;
     font-size: 14px;
     text-transform: uppercase;
 }
 
 .explanation-item p {
-    color: var(--color-text-dim);
+    color: #aaa;
     margin: 0;
     font-size: 14px;
     line-height: 1.5;
@@ -398,19 +292,19 @@ input[type="range"]::-webkit-slider-thumb {
 footer {
     margin-top: 50px;
     padding-top: 20px;
-    border-top: 1px dashed var(--color-border);
+    border-top: 1px dashed #333;
     text-align: center;
-    color: var(--color-text-dim);
+    color: #aaa;
     font-size: 14px;
 }
 
 footer a {
-    color: var(--color-text);
+    color: #00ff00;
     text-decoration: none;
     transition: text-shadow 0.2s;
 }
 
 footer a:hover {
     text-decoration: underline;
-    text-shadow: 0 0 5px var(--color-success-glow);
+    text-shadow: 0 0 5px #00ff00;
 }

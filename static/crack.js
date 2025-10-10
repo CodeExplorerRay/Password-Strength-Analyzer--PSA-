@@ -1,54 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Centralized DOM Element Selectors
-    const UI = {
-        passwordInput: document.getElementById('passwordInput'),
-        toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
-        charCounter: document.getElementById('charCounter'),
-        strengthBar: document.getElementById('strengthBar'),
-        crackTimeSpan: document.getElementById('crackTime'),
-        breachStatusSpan: document.getElementById('breachStatus'),
-        lengthIndicator: document.getElementById('lengthIndicator'),
-        uppercaseIndicator: document.getElementById('uppercaseIndicator'),
-        numberIndicator: document.getElementById('numberIndicator'),
-        symbolIndicator: document.getElementById('symbolIndicator'),
-        generateBtn: document.getElementById('generateBtn'),
-        copyBtn: document.getElementById('copyBtn'),
-        generatedPasswordDiv: document.getElementById('generatedPassword'),
-        crackAnimationDiv: document.getElementById('crackAnimation'),
-        terminalTitle: document.getElementById('terminalTitle'),
-        favicon: document.getElementById('favicon'),
-        // Generator Options
-        lengthSlider: document.getElementById('lengthSlider'),
-        lengthValue: document.getElementById('lengthValue'),
-        includeUppercase: document.getElementById('includeUppercase'),
-        includeNumbers: document.getElementById('includeNumbers'),
-        includeSymbols: document.getElementById('includeSymbols'),
-    };
-
-    // --- Constants ---
-    const FAVICONS = {
-        default: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>∅</text></svg>",
-        weak: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ff5f56%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>❌</text></svg>",
-        medium: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ffbd2e%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>⚠️</text></svg>",
-        strong: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2327c93f%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>✅</text></svg>",
-    };
-
-    const CHARSETS = {
-        LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
-        UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        NUMBERS: "0123456789",
-        SYMBOLS: "!@#$%^&*()-_=+[]{}|;:,.<>?",
-    };
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleVisibilityBtn = document.getElementById('toggleVisibilityBtn');
+    const charCounter = document.getElementById('charCounter');
+    const strengthBar = document.getElementById('strengthBar');
+    const crackTimeSpan = document.getElementById('crackTime');
+    const breachStatusSpan = document.getElementById('breachStatus');
+    const lengthIndicator = document.getElementById('lengthIndicator');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const generatedPasswordDiv = document.getElementById('generatedPassword');
+    const crackAnimationDiv = document.getElementById('crackAnimation');
+    const terminalTitle = document.getElementById('terminalTitle');
 
     let debounceTimer;
     let currentGeneratedPassword = '';
     let simulationTimeout;
 
     // --- Main Event Listeners ---
-    UI.passwordInput.addEventListener('input', () => {
-        const password = UI.passwordInput.value;
-        UI.charCounter.textContent = password.length; // Update character count
-        updateRequirementIndicators(password); // Update all indicators
+    passwordInput.addEventListener('input', () => {
+        const password = passwordInput.value;
+        charCounter.textContent = password.length; // Update character count
+        updateLengthIndicator(password.length); // Update length indicator
 
         resetBreachAndCrackTime();
         clearTimeout(debounceTimer);
@@ -61,46 +33,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
-    UI.toggleVisibilityBtn.addEventListener('click', () => {
-        const isPassword = UI.passwordInput.type === 'password';
-        UI.passwordInput.type = isPassword ? 'text' : 'password';
-        UI.toggleVisibilityBtn.textContent = isPassword ? '🙈' : '👁️';
-    });
-
-    UI.lengthSlider.addEventListener('input', (e) => {
-        UI.lengthValue.textContent = e.target.value;
+    toggleVisibilityBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        toggleVisibilityBtn.textContent = isPassword ? '🙈' : '👁️';
     });
 
     // --- Password Generation ---
-    UI.generateBtn.addEventListener('click', () => {
-        const options = {
-            length: parseInt(UI.lengthSlider.value, 10),
-            uppercase: UI.includeUppercase.checked,
-            numbers: UI.includeNumbers.checked,
-            symbols: UI.includeSymbols.checked,
-        };
-
-        currentGeneratedPassword = generateSecurePasswordClientSide(options);
-        if (!currentGeneratedPassword) {
-            alert("Please select at least one character type for the password generator.");
-            return;
-        }
-
-        UI.passwordInput.value = currentGeneratedPassword;
-        UI.passwordInput.dispatchEvent(new Event('input')); // Trigger analysis
-        UI.generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
-        UI.generatedPasswordDiv.style.display = 'block';
-        UI.copyBtn.style.display = 'inline-block';
+    generateBtn.addEventListener('click', () => {
+        currentGeneratedPassword = generateSecurePasswordClientSide(20);
+        passwordInput.value = currentGeneratedPassword;
+        charCounter.textContent = currentGeneratedPassword.length;
+        generatedPasswordDiv.textContent = `Generated: ${currentGeneratedPassword}`;
+        generatedPasswordDiv.style.display = 'block';
+        copyBtn.style.display = 'inline-block';
+        analyzePassword(currentGeneratedPassword);
     });
 
     // --- Copy to Clipboard ---
-    UI.copyBtn.addEventListener('click', () => {
+    copyBtn.addEventListener('click', () => {
         if (currentGeneratedPassword) {
             navigator.clipboard.writeText(currentGeneratedPassword).then(() => {
-                const originalText = UI.copyBtn.textContent;
-                UI.copyBtn.textContent = '✅ Copied!';
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '✅ Copied!';
                 setTimeout(() => {
-                    UI.copyBtn.textContent = originalText;
+                    copyBtn.innerHTML = originalText;
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy password: ', err);
@@ -119,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateBreachUI(breachResponse.breach);
         } catch (error) {
             console.error('Breach check failed:', error);
-            UI.breachStatusSpan.textContent = 'Error';
-            UI.breachStatusSpan.className = 'error';
+            breachStatusSpan.textContent = 'Error';
+            breachStatusSpan.className = 'error';
         }
 
         startHackerSimulation(strength);
@@ -128,75 +85,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- UI Update Functions ---
     function updateStrengthUI(strength) {
-        UI.crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
+        crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
         const score = strength.score;
         const width = (score + 1) * 20;
-        const colors = ['var(--color-danger)', 'var(--color-danger)', 'var(--color-accent)', 'var(--color-success)', 'var(--color-success)'];
-        UI.strengthBar.style.width = `${width}%`;
-        UI.strengthBar.style.backgroundColor = colors[score] || 'var(--color-danger)';
+        const colors = ['#ff4d4d', '#ff9b4d', '#ffff4d', '#9bff4d', '#4dff4d'];
+        strengthBar.style.width = `${width}%`;
+        strengthBar.style.backgroundColor = colors[score];
 
         // Update page title
         const strengthTextMap = {
             0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
         };
         document.title = `(${strengthTextMap[score]}) - Password Strength Analyzer`;
-
-        // Update favicon
-        const faviconMap = {
-            0: FAVICONS.weak, 1: FAVICONS.weak,
-            2: FAVICONS.medium, 3: FAVICONS.strong, 4: FAVICONS.strong
-        };
-        UI.favicon.href = faviconMap[score] || FAVICONS.default;
     }
 
-    function updateRequirementIndicators(password) {
-        const requirements = [
-            { indicator: UI.lengthIndicator,    regex: /.{12,}/,       valid: password.length >= 12 },
-            { indicator: UI.uppercaseIndicator, regex: /[A-Z]/,         valid: /[A-Z]/.test(password) },
-            { indicator: UI.numberIndicator,    regex: /[0-9]/,         valid: /[0-9]/.test(password) },
-            { indicator: UI.symbolIndicator,    regex: new RegExp(`[${CHARSETS.SYMBOLS.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}]`), valid: new RegExp(`[${CHARSETS.SYMBOLS.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}]`).test(password) }
-        ];
+    function updateLengthIndicator(length) {
+        const minLength = 12;
+        const icon = lengthIndicator.querySelector('.indicator-icon');
 
-        requirements.forEach(req => {
-            const icon = req.indicator.querySelector('.indicator-icon');
-            if (req.valid) {
-                req.indicator.classList.add('valid');
-                icon.textContent = '✅';
-            } else {
-                req.indicator.classList.remove('valid');
-                icon.textContent = '❌';
-            }
-        });
+        if (length >= minLength) {
+            lengthIndicator.classList.add('valid');
+            icon.textContent = '✅';
+        } else {
+            lengthIndicator.classList.remove('valid');
+            icon.textContent = '❌';
+        }
     }
 
     function updateBreachUI(isPwned) {
         if (isPwned) {
-            UI.breachStatusSpan.textContent = 'PWNED! FOUND IN A DATA BREACH.';
-            UI.breachStatusSpan.className = 'pwned';
+            breachStatusSpan.textContent = 'PWNED! FOUND IN A DATA BREACH.';
+            breachStatusSpan.className = 'pwned';
         } else {
-            UI.breachStatusSpan.textContent = 'CLEAR. NOT FOUND IN KNOWN BREACHES.';
-            UI.breachStatusSpan.className = 'clear';
+            breachStatusSpan.textContent = 'CLEAR. NOT FOUND IN KNOWN BREACHES.';
+            breachStatusSpan.className = 'clear';
         }
     }
 
     function resetUI() {
         document.title = 'Password Strength Analyzer'; // Reset page title
-        UI.favicon.href = FAVICONS.default; // Reset favicon
-        UI.strengthBar.style.width = '0%';
-        UI.charCounter.textContent = '0';
-        updateRequirementIndicators(""); // Reset all indicators
+        strengthBar.style.width = '0%';
+        charCounter.textContent = '0';
+        updateLengthIndicator(0); // Reset length indicator
         resetBreachAndCrackTime();
         clearTimeout(simulationTimeout);
-        UI.crackAnimationDiv.innerHTML = '';
-        UI.generatedPasswordDiv.style.display = 'none';
-        UI.copyBtn.style.display = 'none';
+        crackAnimationDiv.innerHTML = '';
+        generatedPasswordDiv.style.display = 'none';
+        copyBtn.style.display = 'none';
         currentGeneratedPassword = '';
     }
     
     function resetBreachAndCrackTime() {
-        UI.crackTimeSpan.textContent = '—';
-        UI.breachStatusSpan.textContent = '—';
-        UI.breachStatusSpan.className = '';
+        crackTimeSpan.textContent = '—';
+        breachStatusSpan.textContent = '—';
+        breachStatusSpan.className = '';
     }
 
     // --- API Call ---
@@ -211,28 +153,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Client-Side Password Generator ---
-    function generateSecurePasswordClientSide(options) {
-        let charset = CHARSETS.LOWERCASE;
-        if (options.uppercase) charset += CHARSETS.UPPERCASE;
-        if (options.numbers) charset += CHARSETS.NUMBERS;
-        if (options.symbols) charset += CHARSETS.SYMBOLS;
-
-        if (charset === CHARSETS.LOWERCASE) return null; // Prevent generation with no options
-
-        const randomValues = new Uint32Array(options.length);
+    function generateSecurePasswordClientSide(length = 20) {
+        const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:,.<>?";
+        const randomValues = new Uint32Array(length);
         window.crypto.getRandomValues(randomValues);
         let password = "";
-        for (let i = 0; i < options.length; i++) {
+        for (let i = 0; i < length; i++) {
             password += charset[randomValues[i] % charset.length];
         }
-        // TODO: Ensure at least one character from each selected set is included.
         return password;
     }
 
     // --- Enhanced Hacker Simulation ---
     function startHackerSimulation(strength) {
         clearTimeout(simulationTimeout);
-        UI.crackAnimationDiv.innerHTML = '';
+        crackAnimationDiv.innerHTML = '';
         const { score, password } = strength;
         
         const typeLine = (text, className = '', initialDelay = 0) => {
@@ -240,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 simulationTimeout = setTimeout(() => {
                     const p = document.createElement('p');
                     if (className) p.className = className;
-                    UI.crackAnimationDiv.appendChild(p);
+                    crackAnimationDiv.appendChild(p);
 
                     let i = 0;
                     const typingSpeed = 25; // ms per character
@@ -248,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const typeChar = () => {
                         if (i < text.length) {
                             p.textContent += text.charAt(i);
-                            UI.crackAnimationDiv.scrollTop = UI.crackAnimationDiv.scrollHeight;
+                            crackAnimationDiv.scrollTop = crackAnimationDiv.scrollHeight;
                             i++;
                             simulationTimeout = setTimeout(typeChar, typingSpeed);
                         } else {
@@ -294,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://api.ipify.org?format=json');
             if (!response.ok) throw new Error('Failed to fetch IP address');
             const data = await response.json();
-            UI.terminalTitle.textContent = `user@${data.ip}:~`;
+            terminalTitle.textContent = `user@${data.ip}:~`;
         } catch (error) {
             console.error('Could not set dynamic terminal title:', error);
         }
