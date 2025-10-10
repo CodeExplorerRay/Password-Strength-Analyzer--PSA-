@@ -18,7 +18,9 @@
             <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
             <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
         </div>
-        <div id="strengthMeter"></div>
+        <div id="strengthMeter" class="strength-meter-container">
+            <div id="strengthBar" class="strength-bar-inner"></div>
+        </div>
         
         <div id="results">
             <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
@@ -55,6 +57,10 @@
                 <p>This checks if your exact password has appeared in a known data breach using the 'Have I Been Pwned' database. If it's "PWNED!", you should never use this password again as it's publicly available to hackers.</p>
             </div>
         </div>
+
+        <footer>
+            <p>Crafted by <a href="https://github.com/CodeExplorerRay" target="_blank" rel="noopener noreferrer">CodeExplorerRay</a> | View on <a href="https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+        </footer>
 
     <script src="/static/c.js"></script>
 </body>
