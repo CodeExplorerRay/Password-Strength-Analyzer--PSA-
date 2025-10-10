@@ -7,12 +7,13 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 import os
-import re
 
-# Get absolute paths in a deployment-safe way
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-app = Flask(__name__,)
+app = Flask(
+    __name__,
+    static_url_path='',  # Serve static files from the root URL
+    static_folder='static' # Set the static folder to 'static'
+)
+app.static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 
 # HIBP API (Breach Check)
 HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
@@ -65,16 +66,6 @@ def get_generated_password():
     # It's better to generate passwords on the client, but if a backend endpoint is desired, this is how.
     new_password = generate_password()
     return jsonify({"password": new_password})
-
-# === STATIC FILES ===
-@app.route('/static/<path:filename>')
-def serve_static(filename):
-    return send_from_directory(app.static_folder, filename)
-    
-@app.route('/robots.txt')
-def serve_robots():
-    # Correctly serve robots.txt from the project's root directory
-    return send_from_directory(os.path.join(BASE_DIR, 'Password-Strength-Analyzer--PSA-'), 'robots.txt')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
