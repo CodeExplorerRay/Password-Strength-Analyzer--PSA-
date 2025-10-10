@@ -129,6 +129,81 @@ button:hover {
     background: #444;
 }
 
+/* --- Generator Options --- */
+.generator-options {
+    background-color: rgba(26, 26, 26, 0.7);
+    border: 1px solid var(--color-border);
+    padding: 15px;
+    margin: 20px 0;
+    text-align: left;
+    border-left: 3px solid var(--color-accent);
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.option-item:last-child {
+    margin-bottom: 0;
+}
+
+.option-item label {
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+    color: var(--color-text-dim);
+}
+
+.option-item input[type="checkbox"] {
+    display: none; /* Hide default checkbox */
+}
+
+.option-item label::before {
+    content: '[ ]';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text);
+    font-weight: bold;
+}
+
+.option-item input[type="checkbox"]:checked + label::before {
+    content: '[■]';
+    color: var(--color-success);
+}
+
+.length-slider {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.length-slider label {
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--color-bg-meter);
+    outline: none;
+    border: 1px solid var(--color-border);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-success);
+    cursor: pointer;
+    box-shadow: 0 0 5px var(--color-success-glow);
+}
+
 /* --- Results & Strength Meter --- */
 .strength-meter-container {
     height: 10px;
@@ -148,7 +223,20 @@ button:hover {
 
 #results {
     margin: 20px 0;
+    padding: 15px;
     text-align: left;
+    background-color: rgba(26, 26, 26, 0.7);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+}
+
+#results p {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+
+#results p:last-child {
+    margin-bottom: 0;
 }
 
 #generatedPassword {
@@ -237,15 +325,6 @@ button:hover {
     display: inline-block; /* Allows for transform */
     color: #ff5f56; /* Red by default */
     transition: color 0.4s, transform 0.4s;
-}
-
-#lengthIndicator {
-    color: #aaa;
-    transition: color 0.4s;
-}
-
-#lengthIndicator.valid {
-    color: #27c93f; /* Green when valid */
 }
 
 .sim-progress {
