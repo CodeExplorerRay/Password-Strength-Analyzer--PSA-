@@ -8,12 +8,7 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 import os
 
-app = Flask(
-    __name__,
-    static_url_path='',  # Serve static files from the root URL
-    static_folder='static' # Set the static folder to 'static'
-)
-app.static_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+app = Flask(__name__)
 
 # HIBP API (Breach Check)
 HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
