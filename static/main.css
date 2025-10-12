@@ -1,3 +1,9 @@
+/* --- Keyframes for Stat Ticker --- */
+@keyframes tick {
+    0% { transform: translateY(0.5em); opacity: 0; }
+    50% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+}
 /* --- Keyframes for Animations --- */
 @keyframes animated-grid {
     0% { background-position: 0 0; }
@@ -7,6 +13,12 @@
 @keyframes scanline-scroll {
     0% { transform: translateY(0); }
     100% { transform: translateY(100%); }
+}
+
+@keyframes logo-glow {
+    0% { filter: drop-shadow(0 0 3px var(--color-success)); }
+    50% { filter: drop-shadow(0 0 12px var(--color-success)); }
+    100% { filter: drop-shadow(0 0 3px var(--color-success)); }
 }
 
 /* --- Color Palette & Theme --- */
@@ -92,6 +104,29 @@ body::before {
     border: 0;
 }
 
+html {
+    /* Smooth scrolling for anchor links */
+    scroll-behavior: smooth;
+}
+
+/* --- Watermark --- */
+.watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1; /* Place behind all content */
+    width: 40vw;
+    max-width: 300px;
+    height: auto;
+    background-image: url('/static/gptimage.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.03; /* Make it very subtle */
+    pointer-events: none;
+}
+
 /* --- Site Header --- */
 .site-header {
     display: flex;
@@ -104,11 +139,27 @@ body::before {
     margin-bottom: 20px;
 }
 
-.site-header .logo {
-    margin: 0;
-    font-size: 1.2em;
-    color: var(--color-accent);
-    text-shadow: 0 0 5px var(--color-accent);
+.header-title {
+    display: flex;
+    align-items: center;
+}
+
+.brand-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    /* Gradient text effect */
+    background: linear-gradient(45deg, var(--color-success), var(--color-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent; /* For better browser compatibility */
+}
+
+.header-logo {
+    height: 50px; /* Adjust height as needed */
+    width: auto;
+    display: block;
+    animation: logo-glow 3s infinite ease-in-out;
 }
 
 .header-status {
@@ -132,23 +183,76 @@ body::before {
     animation: pulse 2s infinite;
 }
 
-/* --- Mission Briefing Card --- */
-.mission-briefing {
-    border: 1px dashed var(--color-border);
-    padding: 15px;
-    margin-bottom: 20px;
-    text-align: left;
+/* --- Hero Section --- */
+.hero-section {
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 40px;
+    border-bottom: 1px dashed var(--color-border);
+}
+
+.hero-section h1 {
+    font-size: 2em;
+    color: var(--color-text);
+    margin: 0 0 15px 0;
+    line-height: 1.3;
+}
+
+.hero-section .subheadline {
+    font-size: 1.1em;
     color: var(--color-text-dim);
+    margin: 0 0 30px 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.mission-briefing p {
-    margin: 0;
-    line-height: 1.6;
+.hero-cta {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-h2.briefing-title {
-    color: var(--color-accent);
+.hero-cta a {
+    text-decoration: none;
+    padding: 12px 25px;
+    font-family: 'Courier New', monospace;
+    transition: all 0.2s;
+}
+
+.button-primary {
+    background-color: var(--color-success);
+    color: var(--color-bg);
     font-weight: bold;
+}
+
+.button-primary:hover {
+    box-shadow: 0 0 15px var(--color-success-glow);
+}
+
+.button-secondary {
+    background-color: transparent;
+    color: var(--color-text-dim);
+    border: 1px solid var(--color-border);
+}
+
+.button-secondary:hover {
+    background-color: var(--color-bg-input);
+    color: var(--color-text);
+}
+
+.trust-bar {
+    font-size: 0.9em;
+    color: var(--color-text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.trust-bar span {
+    display: inline-block;
 }
 
 .container {
@@ -229,6 +333,13 @@ button {
 
 button:hover {
     background: var(--color-bg-button-hover);
+}
+
+.microcopy {
+    font-size: 0.8em;
+    color: var(--color-text-dim);
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 /* --- Generator Options --- */
@@ -318,19 +429,21 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* --- Results & Strength Meter --- */
 .strength-meter-container {
+    display: flex;
+    gap: 4px;
     height: 10px;
-    background: var(--color-bg-meter);
     margin: 10px 0;
-    border-radius: 5px;
-    overflow: hidden; /* Ensures the inner bar's corners are clipped */
 }
 
-.strength-bar-inner {
-    height: 100%;
-    width: 0; /* Starts empty */
-    border-radius: 5px;
-    /* This is the key for the smooth animation */
-    transition: width 0.4s ease-in-out, background-color 0.4s ease-in-out;
+.strength-segment {
+    flex: 1;
+    background-color: var(--color-bg-meter);
+    border-radius: 3px;
+    transition: background-color 0.4s ease-in-out;
+}
+
+.strength-segment.active {
+    background-color: var(--color-danger); /* Default active color */
 }
 
 #results {
@@ -508,8 +621,130 @@ footer a:hover {
     text-shadow: 0 0 5px var(--color-success-glow);
 }
 
+/* --- Disclaimer Section --- */
+.disclaimer-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    padding: 20px;
+    border: 1px dashed var(--color-danger);
+    background-color: rgba(255, 95, 86, 0.05); /* Faint red background */
+    text-align: left;
+}
+
+.disclaimer-section h3 {
+    color: var(--color-danger);
+    font-size: 16px;
+    margin: 0 0 15px 0;
+    text-shadow: 0 0 5px var(--color-danger-glow);
+}
+
+.disclaimer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: 14px;
+}
+
+.disclaimer-section li {
+    margin-bottom: 10px;
+}
+
+.disclaimer-section li::before {
+    content: '>>';
+    color: var(--color-danger);
+    margin-right: 10px;
+}
+
+.disclaimer-section strong {
+    color: var(--color-text);
+}
+
+/* --- Live Stats Panel --- */
+.live-stats-panel {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    padding: 20px 10px;
+    margin-bottom: 40px;
+    border: 1px dashed var(--color-border);
+    background-color: var(--color-bg-input);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--color-accent);
+    text-shadow: 0 0 5px var(--color-accent);
+}
+
+.stat-value .stat-digit {
+    display: inline-block;
+}
+.stat-digit.tick {
+    animation: tick 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: var(--color-text-dim);
+}
+
 @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
+}
+
+/* --- Gamification / Achievements --- */
+.achievement-popup {
+    position: fixed;
+    bottom: -100px; /* Start off-screen */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    padding: 15px 25px;
+    border-radius: 5px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    box-shadow: 0 0 20px var(--color-accent);
+    transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.achievement-popup.show {
+    bottom: 20px;
+}
+
+.achievement-icon {
+    font-size: 1.5em;
+}
+
+/* --- Social Sharing --- */
+.social-share {
+    margin-top: 20px;
+}
+
+.share-button {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    padding: 8px 15px;
+    font-size: 0.9em;
+    transition: all 0.2s;
+}
+
+.share-button:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    box-shadow: 0 0 10px var(--color-accent);
 }

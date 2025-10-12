@@ -21,23 +21,29 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.psa-terminal.linkpc.net/">
-    <meta property="og:title" content="∅ PSA-TERMINAL ∅ - Password Strength Analyzer">
+    <meta property="og:title" content="PassRogue - Password Strength Analyzer">
     <meta property="og:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
     <meta property="og:image" content="https://www.psa-terminal.linkpc.net/static/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
 
-    <title>Free Password Strength Analyzer & Breach Check | PSA-TERMINAL</title>
+    <title>Free Password Strength Analyzer & Breach Check | PassRogue</title>
     <!-- Add zxcvbn library for client-side strength analysis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
     <link rel="stylesheet" href="/static/main.css" />
     <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
 </head>
 <body>
+    <div id="achievementUnlock" class="achievement-popup">
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-text"></div>
+    </div>
+    <div class="watermark"></div>
     <header class="site-header">
         <div class="header-title">
-            <div class="logo">∅ PSA-TERMINAL ∅</div>
+            <img src="/static/gptimage.png" alt="PassRogue Brand Logo" class="header-logo">
+            <span class="brand-name">PassRogue</span>
         </div>
         <div class="header-status">
             <span>SYSTEM STATUS:</span>
@@ -46,54 +52,72 @@
         </div>
     </header>
     <main class="container">
-        <h1>Real-Time Password Strength Analyzer</h1>
-        <section class="mission-briefing" aria-labelledby="mission-title">
-            <h2 id="mission-title" class="briefing-title">MISSION BRIEFING:</h2>
-            <p>This terminal provides critical intelligence on password vulnerabilities. By simulating modern attack vectors and cross-referencing with known breach data, it offers a real-time threat assessment. Use this intel to fortify your digital defenses. Your security is your responsibility.</p>
+        <section class="hero-section">
+            <h1>Know How Strong Your Password Really Is — in Real Time</h1>
+            <p class="subheadline">Simulate attack vectors, check for data leaks, and strengthen your credentials instantly.</p>
+
+            <section id="analyzer" aria-label="Password Input and Analysis">
+                <div class="input-wrapper">
+                    <input type="password" id="passwordInput" placeholder="Enter Password to Analyze..." autocomplete="off">
+                    <span id="charCounter" class="char-counter">0</span>
+                    <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
+                </div>
+                <div id="strengthMeter" class="strength-meter-container">
+                    <div class="strength-segment"></div>
+                    <div class="strength-segment"></div>
+                    <div class="strength-segment"></div>
+                    <div class="strength-segment"></div>
+                    <div class="strength-segment"></div>
+                </div>
+                
+                <div id="results">
+                    <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
+                    <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
+                </div>
+            </section>
+    
+            <section id="generator" class="generator-options" aria-labelledby="generator-title">
+                <h2 id="generator-title" class="sr-only">Password Generator Options</h2>
+                <div class="option-item length-slider">
+                    <label for="lengthSlider">LENGTH: <span id="lengthValue">20</span></label>
+                    <input type="range" id="lengthSlider" min="8" max="64" value="20" />
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="includeUppercase" checked />
+                    <label for="includeUppercase">UPPERCASE (A-Z)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="includeNumbers" checked />
+                    <label for="includeNumbers">NUMBERS (0-9)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="includeSymbols" checked />
+                    <label for="includeSymbols">SYMBOLS (!@#)</label>
+                </div>
+            </section>
+    
+            <section aria-label="Password Generator Actions">
+                <div class="action-buttons">
+                    <button id="generateBtn">Generate Strong Password</button>
+                    <button id="copyBtn" title="Copy to Clipboard" style="display: none;">📋 Copy</button>
+                </div>
+                <div id="generatedPassword"></div>
+            </section>
         </section>
 
-        <section aria-label="Password Input and Analysis">
-            <div class="input-wrapper">
-                <input type="password" id="passwordInput" placeholder="Enter Password to Analyze..." autocomplete="off">
-                <span id="charCounter" class="char-counter">0</span>
-                <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
+        <section class="live-stats-panel">
+            <div class="stat-item">
+                <span class="stat-value" id="usersOnline">--</span>
+                <span class="stat-label">// USERS ONLINE</span>
             </div>
-            <div id="strengthMeter" class="strength-meter-container">
-                <div id="strengthBar" class="strength-bar-inner"></div>
+            <div class="stat-item">
+                <span class="stat-value" id="passwordsAnalyzed">--</span>
+                <span class="stat-label">// PASSWORDS SCANNED TODAY</span>
             </div>
-            
-            <div id="results">
-                <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
-                <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
+            <div class="stat-item">
+                <span class="stat-value" id="breachChecks">--</span>
+                <span class="stat-label">// BREACH CHECKS PERFORMED</span>
             </div>
-        </section>
-
-        <section class="generator-options" aria-labelledby="generator-title">
-            <h2 id="generator-title" class="sr-only">Password Generator Options</h2>
-            <div class="option-item length-slider">
-                <label for="lengthSlider">LENGTH: <span id="lengthValue">20</span></label>
-                <input type="range" id="lengthSlider" min="8" max="64" value="20" />
-            </div>
-            <div class="option-item">
-                <input type="checkbox" id="includeUppercase" checked />
-                <label for="includeUppercase">UPPERCASE (A-Z)</label>
-            </div>
-            <div class="option-item">
-                <input type="checkbox" id="includeNumbers" checked />
-                <label for="includeNumbers">NUMBERS (0-9)</label>
-            </div>
-            <div class="option-item">
-                <input type="checkbox" id="includeSymbols" checked />
-                <label for="includeSymbols">SYMBOLS (!@#)</label>
-            </div>
-        </section>
-
-        <section aria-label="Password Generator Actions">
-            <div class="action-buttons">
-                <button id="generateBtn">Generate Strong Password</button>
-                <button id="copyBtn" title="Copy to Clipboard" style="display: none;">📋 Copy</button>
-            </div>
-            <div id="generatedPassword"></div>
         </section>
 
         <section id="hackerSimulation" aria-labelledby="simulation-title">
@@ -119,6 +143,16 @@
                 <h4>DARK WEB BREACH</h4>
                 <p>This checks if your exact password has appeared in a known data breach using the 'Have I Been Pwned' database. If it's "PWNED!", you should never use this password again as it's publicly available to hackers.</p>
             </div>
+        </section>
+
+        <section class="disclaimer-section" aria-labelledby="disclaimer-title">
+            <h3 id="disclaimer-title">// SYSTEM DIRECTIVE: USAGE POLICY //</h3>
+            <ul>
+                <li><strong>FOR ETHICAL SECURITY TESTING ONLY.</strong> Illegal use is strictly prohibited.</li>
+                <li><strong>NO WARRANTY.</strong> This tool is provided as-is. You are 100% responsible for your actions.</li>
+                <li><strong>PRIVACY FOCUSED.</strong> Passwords are analyzed in your browser and are never stored or transmitted, except for the secure, anonymized breach check.</li>
+                <li><strong>NO LIABILITY.</strong> The creators are not responsible for any misuse or data loss.</li>
+            </ul>
         </section>
 
     </main>

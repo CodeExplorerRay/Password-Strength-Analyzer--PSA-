@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         passwordInput: document.getElementById('passwordInput'),
         toggleVisibilityBtn: document.getElementById('toggleVisibilityBtn'),
         charCounter: document.getElementById('charCounter'),
-        strengthBar: document.getElementById('strengthBar'),
+        strengthMeter: document.getElementById('strengthMeter'),
         crackTimeSpan: document.getElementById('crackTime'),
         breachStatusSpan: document.getElementById('breachStatus'),
         generateBtn: document.getElementById('generateBtn'),
@@ -19,11 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
         includeUppercase: document.getElementById('includeUppercase'),
         includeNumbers: document.getElementById('includeNumbers'),
         includeSymbols: document.getElementById('includeSymbols'),
+        achievementUnlock: document.getElementById('achievementUnlock'),
+        // Live Stats
+        usersOnline: document.getElementById('usersOnline'),
+        passwordsAnalyzed: document.getElementById('passwordsAnalyzed'),
+        breachChecks: document.getElementById('breachChecks'),
     };
 
     // --- Constants ---
     const FAVICONS = {
-        default: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>∅</text></svg>",
+        default: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>",
         weak: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ff5f56%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>❌</text></svg>",
         medium: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ffbd2e%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>⚠️</text></svg>",
         strong: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2327c93f%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>✅</text></svg>",
@@ -40,6 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let debounceTimer;
     let currentGeneratedPassword = '';
     let simulationTimeout;
+
+    // --- Gamification State ---
+    let analysisCount = parseInt(localStorage.getItem('passrogue_analysisCount') || '0');
+    let achievements = JSON.parse(localStorage.getItem('passrogue_achievements') || '[]');
 
     // --- Main Event Listeners ---
     UI.passwordInput.addEventListener('input', () => {
@@ -107,6 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Social Sharing ---
+    window.shareResult = function() {
+        const passwordStrength = document.title;
+        const shareText = `I just tested a password on PassRogue and the result was: ${passwordStrength}. How strong is yours?`;
+        const shareUrl = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({ title: 'PassRogue Password Analysis', text: shareText, url: shareUrl });
+        } else {
+            // Fallback for desktop
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+            window.open(twitterUrl, '_blank');
+        }
+    }
     // --- Core Analysis Function ---
     async function analyzePassword(password) {
         const strength = zxcvbn(password);
@@ -114,6 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const breachResponse = await checkBreachOnServer(password);
+            if (UI.breachChecks) { // Increment breach check counter
+                UI.breachChecks.textContent = (parseInt(UI.breachChecks.textContent.replace(/,/g, '')) + 1).toLocaleString();
+            }
             updateBreachUI(breachResponse.breach);
         } catch (error) {
             console.error('Breach check failed:', error);
@@ -121,18 +147,35 @@ document.addEventListener('DOMContentLoaded', () => {
             UI.breachStatusSpan.className = 'pwned'; // Reuse 'pwned' style for error state
         }
 
+        if (UI.passwordsAnalyzed) { // Increment analyzed counter
+            UI.passwordsAnalyzed.textContent = (parseInt(UI.passwordsAnalyzed.textContent.replace(/,/g, '')) + 1).toLocaleString();
+        }
+
+        // --- Gamification Hooks ---
+        analysisCount++;
+        localStorage.setItem('passrogue_analysisCount', analysisCount);
+        checkAchievements(strength);
+
         startHackerSimulation(strength);
     }
 
     // --- UI Update Functions ---
     function updateStrengthUI(strength) {
         UI.crackTimeSpan.textContent = strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase();
+        
         const score = strength.score;
-        const width = (score + 1) * 20;
+        const segments = UI.strengthMeter.querySelectorAll('.strength-segment');
         const colors = ['var(--color-danger)', 'var(--color-danger)', 'var(--color-accent)', 'var(--color-success)', 'var(--color-success)'];
-        UI.strengthBar.style.width = `${width}%`;
-        UI.strengthBar.style.backgroundColor = colors[score] || 'var(--color-danger)';
 
+        segments.forEach((segment, index) => {
+            if (index <= score) {
+                segment.classList.add('active');
+                segment.style.backgroundColor = colors[score];
+            } else {
+                segment.classList.remove('active');
+                segment.style.backgroundColor = 'var(--color-bg-meter)';
+            }
+        });
         // Update page title
         const strengthTextMap = {
             0: 'Very Weak', 1: 'Weak', 2: 'Medium', 3: 'Strong', 4: 'Very Strong'
@@ -161,7 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetUI() {
         document.title = 'Password Strength Analyzer'; // Reset page title
         UI.favicon.href = FAVICONS.default; // Reset favicon
-        UI.strengthBar.style.width = '0%';
+        UI.strengthMeter.querySelectorAll('.strength-segment').forEach(segment => {
+            segment.classList.remove('active');
+            segment.style.backgroundColor = 'var(--color-bg-meter)';
+        });
         UI.charCounter.textContent = '0';
         resetBreachAndCrackTime();
         clearTimeout(simulationTimeout);
@@ -224,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Shuffle the final array to ensure required characters are not always at the start
         // This is a modern Fisher-Yates shuffle implementation
         const randomIndices = new Uint32Array(passwordChars.length);
-        window.crypto.getRandomValues(randomValues);
+        window.crypto.getRandomValues(randomIndices);
         for (let i = passwordChars.length - 1; i > 0; i--) {
             const j = randomIndices[i] % (i + 1);
             [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
@@ -237,55 +283,110 @@ document.addEventListener('DOMContentLoaded', () => {
     function startHackerSimulation(strength) {
         clearTimeout(simulationTimeout);
         UI.crackAnimationDiv.innerHTML = '';
-        const { score, password } = strength;
+        const { score, password, guesses_log10 } = strength;
         
-        const typeLine = (text, className = '', initialDelay = 0) => {
+        const typeLine = (text, className = '', delay = 0, speed = 25) => {
             return new Promise(resolve => {
-                simulationTimeout = setTimeout(() => {
+                setTimeout(() => {
                     const p = document.createElement('p');
                     if (className) p.className = className;
                     UI.crackAnimationDiv.appendChild(p);
 
                     let i = 0;
-                    const typingSpeed = 25; // ms per character
-
                     const typeChar = () => {
                         if (i < text.length) {
                             p.textContent += text.charAt(i);
                             UI.crackAnimationDiv.scrollTop = UI.crackAnimationDiv.scrollHeight;
                             i++;
-                            simulationTimeout = setTimeout(typeChar, typingSpeed);
+                            simulationTimeout = setTimeout(typeChar, speed + (Math.random() * speed));
                         } else {
                             resolve();
                         }
                     };
                     typeChar();
-                }, initialDelay);
+                }, delay);
             });
         };
 
+        const showProgress = (duration) => {
+            return new Promise(resolve => {
+                const p = document.createElement('p');
+                UI.crackAnimationDiv.appendChild(p);
+                const startTime = Date.now();
+                const updateInterval = 100;
+
+                const update = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const barLength = 20;
+                    const filledLength = Math.round(barLength * progress);
+                    const bar = '█'.repeat(filledLength) + ' '.repeat(barLength - filledLength);
+                    p.textContent = `> Progress: [${bar}] ${Math.round(progress * 100)}%`;
+                    UI.crackAnimationDiv.scrollTop = UI.crackAnimationDiv.scrollHeight;
+
+                    if (progress < 1) {
+                        simulationTimeout = setTimeout(update, updateInterval);
+                    } else {
+                        p.textContent = `> Progress: [${'█'.repeat(barLength)}] 100%`;
+                        resolve();
+                    }
+                };
+                update();
+            });
+        };
+
+        const showGuesses = (count, delay) => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = 'sim-progress';
+                    UI.crackAnimationDiv.appendChild(p);
+                    let i = 0;
+                    const interval = setInterval(() => {
+                        if (i >= count) {
+                            clearInterval(interval);
+                            resolve();
+                            return;
+                        }
+                        p.textContent = `> Trying: ${generateRandomString(password.length)}`;
+                        UI.crackAnimationDiv.scrollTop = UI.crackAnimationDiv.scrollHeight;
+                        i++;
+                    }, 100);
+                }, delay);
+            });
+        };
+
+        const generateRandomString = (len) => {
+            const chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            let result = '';
+            for (let i = 0; i < len; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        };
+
         const run = async () => {
-            await typeLine('> Initializing hashcat v6.2.5...', '', 0);
-            await typeLine('> Hash.Type........: NTLM (common web hash)', 'sim-progress', 500);
+            await typeLine('> Initializing PassRogue Cracker v3.0...', '', 0, 10);
+            await typeLine('> GPUs detected: 1 | Activating device #1: NVIDIA RTX 4090', 'sim-progress', 200);
+            await typeLine(`> Target Hash Type..: NTLM (guesses: ${Math.round(Math.pow(10, guesses_log10)).toLocaleString()})`, 'sim-progress', 400);
 
             if (score <= 1) {
-                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await typeLine('> STATUS: CRACKED', 'sim-fail', 600);
-                await typeLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
+                await typeLine('> Attack Mode.......: Dictionary (rockyou.txt)', 'sim-progress', 400);
+                await showProgress(1500);
+                await typeLine('> STATUS: CRACKED', 'sim-fail', 100);
+                await typeLine(`> Cracked Password..: ${password}`, 'pwned', 200);
             } else if (score === 2) {
-                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
-                await typeLine('> Switching to rule-based attack (best64.rule)...', '', 500);
-                await typeLine('> STATUS: CRACKED', 'sim-fail', 1200);
-                await typeLine(`> Cracked.Password.: ${password}`, 'pwned', 200);
+                await typeLine('> Attack Mode.......: Dictionary + Rules (best64.rule)', 'sim-progress', 400);
+                await showProgress(3000);
+                await typeLine('> STATUS: CRACKED', 'sim-fail', 100);
+                await typeLine(`> Cracked Password..: ${password}`, 'pwned', 200);
             } else {
-                await typeLine('> Attack.Mode......: Dictionary (rockyou.txt)', 'sim-progress', 400);
-                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1000);
-                await typeLine('> Switching to rule-based attack (best64.rule)...', '', 500);
-                await typeLine('> STATUS: EXHAUSTED', 'sim-progress', 1200);
-                await typeLine('> Switching to brute-force (mask attack)...', '', 500);
-                await typeLine(`> Estimated.Time...: ${strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase()}`, 'sim-progress', 800);
-                await typeLine('>> ATTACK ABORTED. TOO COMPLEX.', 'clear', 500);
+                await typeLine('> Attack Mode.......: Brute-force (Mask Attack)', 'sim-progress', 400);
+                await typeLine('> Mask..............: ?a?a?a?a?a?a...', 'sim-progress', 500);
+                showGuesses(50, 600);
+                await showProgress(5000);
+                await typeLine(`> Estimated Time....: ${strength.crack_times_display.offline_slow_hashing_1e4_per_second.toUpperCase()}`, 'sim-progress', 100);
+                await typeLine('>> ATTACK ABORTED. TIME-TO-CRACK EXCEEDS FEASIBILITY.', 'clear', 500);
             }
         };
 
@@ -304,7 +405,120 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Gamification & Achievements ---
+    function checkAchievements(strength) {
+        const achievementMap = {
+            'first_blood': { condition: analysisCount === 1, text: "First Blood - Analyzed your first password" },
+            'addicted': { condition: analysisCount === 10, text: "Addicted - Analyzed 10 passwords" },
+            'cypher_master': { condition: strength.score === 4, text: "Cypher Master - Created a 'Very Strong' password" }
+        };
+
+        for (const [key, achievement] of Object.entries(achievementMap)) {
+            if (achievement.condition && !achievements.includes(key)) {
+                achievements.push(key);
+                localStorage.setItem('passrogue_achievements', JSON.stringify(achievements));
+                showAchievement(achievement.text);
+                break; // Show one achievement at a time
+            }
+        }
+    }
+
+    function showAchievement(text) {
+        const achievementText = UI.achievementUnlock.querySelector('.achievement-text');
+        achievementText.textContent = text;
+        UI.achievementUnlock.classList.add('show');
+        setTimeout(() => {
+            UI.achievementUnlock.classList.remove('show');
+        }, 4000);
+    }
+
+    // --- Live Stats Simulation & Obfuscation ---
+    function formatStatNumber(num) {
+        const number = Math.floor(num);
+        if (number >= 1000000) {
+            return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (number >= 1000) {
+            return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return number.toString();
+    }
+
+    function renderAnimatedNumber(element, number) {
+        // Use the new formatting function for display
+        const numberStr = formatStatNumber(number);
+        const oldStr = Array.from(element.children).map(span => span.textContent).join('');
+
+        // Clear previous content
+        element.innerHTML = '';
+
+        for (let i = 0; i < numberStr.length; i++) {
+            const digitSpan = document.createElement('span');
+            digitSpan.className = 'stat-digit';
+            digitSpan.textContent = numberStr[i];
+
+            // Add a subtle animation if the digit has changed
+            if (oldStr[i] !== numberStr[i]) {
+                digitSpan.classList.add('tick');
+                digitSpan.addEventListener('animationend', () => digitSpan.classList.remove('tick'), { once: true });
+            }
+
+            element.appendChild(digitSpan);
+        }
+    }
+
+    function initializeLiveStats() {
+        if (!UI.usersOnline) return; // Don't run if the elements don't exist
+
+        // Base numbers on time of day for more "realistic" starting points
+        const now = new Date();
+        const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
+
+        let users = 120 + Math.floor(Math.sin(minutesSinceMidnight / 30) * 50) + Math.floor(Math.random() * 20);
+        let analyzed = 7500 + Math.floor(minutesSinceMidnight * 15.5);
+        let breaches = 11500 + Math.floor(minutesSinceMidnight * 22.3);
+
+        // Initial render
+        renderAnimatedNumber(UI.usersOnline, users);
+        renderAnimatedNumber(UI.passwordsAnalyzed, analyzed);
+        renderAnimatedNumber(UI.breachChecks, breaches);
+
+        // Fluctuate user count
+        setInterval(() => {
+            const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+            users = Math.max(100, users + change); // Keep it above a minimum
+            renderAnimatedNumber(UI.usersOnline, users);
+        }, 3000); // Update every 3 seconds
+
+        // Increment counters slowly
+        setInterval(() => {
+            analyzed += 1;
+            renderAnimatedNumber(UI.passwordsAnalyzed, analyzed);
+        }, 1500); // Update every 1.5 seconds
+
+        setInterval(() => {
+            breaches += (Math.random() > 0.5 ? 1 : 2);
+            renderAnimatedNumber(UI.breachChecks, breaches);
+        }, 1500); // Update every 1.5 seconds
+    }
+
     // --- Initializations ---
     setDynamicTerminalTitle();
+
+    // --- VOID-ENHANCEMENT PROTOCOL: Quick Wins ---
+    let sessionCount = parseInt(localStorage.getItem('passrogue_sessions')) || 0;
+    sessionCount++;
+    localStorage.setItem('passrogue_sessions', sessionCount);
+
+    if (sessionCount === 1) { // First visit hook
+        setTimeout(() => {
+            showAchievement("🌀 Welcome to the Void. Your journey begins.");
+        }, 3000);
+    } else { // Return visitor hook
+        console.log(`%c∅: Welcome back, Void Walker. Session #${sessionCount}`, 'color: #00ff00; font-family: "Courier New", monospace;');
+    }
+    // --- End Protocol ---
+
+    initializeLiveStats();
     resetUI();
 });
