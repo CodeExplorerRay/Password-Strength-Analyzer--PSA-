@@ -29,11 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         strong: "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2327c93f%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 font-size=%2280%22 fill=%22black%22>✅</text></svg>",
     };
 
+    // High-grade character sets excluding ambiguous characters (O, 0, I, l, |)
     const CHARSETS = {
-        LOWERCASE: "abcdefghijklmnopqrstuvwxyz",
-        UPPERCASE: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        NUMBERS: "0123456789",
-        SYMBOLS: "!@#$%^&*()-_=+[]{}|;:,.<>?",
+        LOWERCASE: "abcdefghijkmnpqrstuvwxyz",
+        UPPERCASE: "ABCDEFGHJKLMNPQRSTUVWXYZ",
+        NUMBERS: "23456789",
+        SYMBOLS: "!@#$%^&*()-_=+[]{};:'\",.<>/?`~", // Expanded symbol set
     };
 
     let debounceTimer;
@@ -118,6 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Breach check failed:', error);
             UI.breachStatusSpan.textContent = 'Error';
             UI.breachStatusSpan.className = 'error';
+            UI.breachStatusSpan.textContent = 'BREACH CHECK SERVICE UNAVAILABLE';
+            UI.breachStatusSpan.className = 'pwned'; // Reuse 'pwned' style for error state
         }
 
         startHackerSimulation(strength);
@@ -189,38 +192,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Client-Side Password Generator ---
     function generateSecurePasswordClientSide(options) {
-        const { length, uppercase, numbers, symbols } = options;
-        const mandatoryChars = [];
-        let availableCharset = CHARSETS.LOWERCASE;
+        const { length, uppercase, numbers, symbols } = options; // Get generator options
+        let characterPool = CHARSETS.LOWERCASE; // Start with lowercase by default
+        const requiredChars = [getRandomChar(CHARSETS.LOWERCASE)]; // Always include at least one lowercase
 
-        if (uppercase) {
-            availableCharset += CHARSETS.UPPERCASE;
-            mandatoryChars.push(CHARSETS.UPPERCASE[Math.floor(Math.random() * CHARSETS.UPPERCASE.length)]);
-        }
-        if (numbers) {
-            availableCharset += CHARSETS.NUMBERS;
-            mandatoryChars.push(CHARSETS.NUMBERS[Math.floor(Math.random() * CHARSETS.NUMBERS.length)]);
-        }
-        if (symbols) {
-            availableCharset += CHARSETS.SYMBOLS;
-            mandatoryChars.push(CHARSETS.SYMBOLS[Math.floor(Math.random() * CHARSETS.SYMBOLS.length)]);
+        // Build the full character pool and gather one required character from each selected set
+        if (uppercase) { characterPool += CHARSETS.UPPERCASE; requiredChars.push(getRandomChar(CHARSETS.UPPERCASE)); }
+        if (numbers) { characterPool += CHARSETS.NUMBERS; requiredChars.push(getRandomChar(CHARSETS.NUMBERS)); }
+        if (symbols) { characterPool += CHARSETS.SYMBOLS; requiredChars.push(getRandomChar(CHARSETS.SYMBOLS)); }
+
+        // If the user unchecks all boxes, the pool would only be lowercase.
+        // This check ensures we don't generate an empty password if all options are off.
+        if (!characterPool) return null;
+
+        const remainingLength = length - requiredChars.length;
+        const passwordChars = [...requiredChars];
+
+        // Generate the rest of the password from the full character pool
+        if (remainingLength > 0) {
+            const randomValues = new Uint32Array(remainingLength);
+            window.crypto.getRandomValues(randomValues);
+            for (let i = 0; i < remainingLength; i++) {
+                passwordChars.push(characterPool[randomValues[i] % characterPool.length]);
+            }
         }
 
-        if (availableCharset === CHARSETS.LOWERCASE && !uppercase && !numbers && !symbols) return null;
-
-        const remainingLength = length - mandatoryChars.length;
-        const randomValues = new Uint32Array(remainingLength);
+        // Shuffle the final array to ensure required characters are not always at the start
+        // This is a modern Fisher-Yates shuffle implementation
+        const randomIndices = new Uint32Array(passwordChars.length);
         window.crypto.getRandomValues(randomValues);
-        for (let i = 0; i < remainingLength; i++) {
-            mandatoryChars.push(availableCharset[randomValues[i] % availableCharset.length]);
+        for (let i = passwordChars.length - 1; i > 0; i--) {
+            const j = randomIndices[i] % (i + 1);
+            [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
         }
 
-        for (let i = mandatoryChars.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [mandatoryChars[i], mandatoryChars[j]] = [mandatoryChars[j], mandatoryChars[i]]; // Swap
-        }
-
-        return mandatoryChars.join('');
+        return passwordChars.join('');
     }
 
     // --- Enhanced Hacker Simulation ---
