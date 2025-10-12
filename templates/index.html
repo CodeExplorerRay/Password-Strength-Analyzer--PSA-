@@ -28,7 +28,7 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
 
-    <title>Password Strength Analyzer</title>
+    <title>Free Password Strength Analyzer & Breach Check | PSA-TERMINAL</title>
     <!-- Add zxcvbn library for client-side strength analysis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
     <link rel="stylesheet" href="/static/main.css" />
@@ -37,7 +37,7 @@
 <body>
     <header class="site-header">
         <div class="header-title">
-            <h1>∅ PSA-TERMINAL ∅</h1>
+            <div class="logo">∅ PSA-TERMINAL ∅</div>
         </div>
         <div class="header-status">
             <span>SYSTEM STATUS:</span>
@@ -45,26 +45,31 @@
             <span>ONLINE</span>
         </div>
     </header>
-    <div class="container">
-        <div class="mission-briefing">
-            <p><span class="briefing-title">MISSION BRIEFING:</span> This terminal provides critical intelligence on password vulnerabilities. By simulating modern attack vectors and cross-referencing with known breach data, it offers a real-time threat assessment. Use this intel to fortify your digital defenses. Your security is your responsibility.</p>
-        </div>
+    <main class="container">
+        <h1>Real-Time Password Strength Analyzer</h1>
+        <section class="mission-briefing" aria-labelledby="mission-title">
+            <h2 id="mission-title" class="briefing-title">MISSION BRIEFING:</h2>
+            <p>This terminal provides critical intelligence on password vulnerabilities. By simulating modern attack vectors and cross-referencing with known breach data, it offers a real-time threat assessment. Use this intel to fortify your digital defenses. Your security is your responsibility.</p>
+        </section>
 
-        <div class="input-wrapper">
-            <input type="password" id="passwordInput" placeholder="Enter Password..." autocomplete="off">
-            <span id="charCounter" class="char-counter">0</span>
-            <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
-        </div>
-        <div id="strengthMeter" class="strength-meter-container">
-            <div id="strengthBar" class="strength-bar-inner"></div>
-        </div>
-        
-        <div id="results">
-            <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
-            <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
-        </div>
+        <section aria-label="Password Input and Analysis">
+            <div class="input-wrapper">
+                <input type="password" id="passwordInput" placeholder="Enter Password to Analyze..." autocomplete="off">
+                <span id="charCounter" class="char-counter">0</span>
+                <button id="toggleVisibilityBtn" class="visibility-toggle" title="Show/Hide Password">👁️</button>
+            </div>
+            <div id="strengthMeter" class="strength-meter-container">
+                <div id="strengthBar" class="strength-bar-inner"></div>
+            </div>
+            
+            <div id="results">
+                <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
+                <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
+            </div>
+        </section>
 
-        <div class="generator-options">
+        <section class="generator-options" aria-labelledby="generator-title">
+            <h2 id="generator-title" class="sr-only">Password Generator Options</h2>
             <div class="option-item length-slider">
                 <label for="lengthSlider">LENGTH: <span id="lengthValue">20</span></label>
                 <input type="range" id="lengthSlider" min="8" max="64" value="20" />
@@ -81,16 +86,18 @@
                 <input type="checkbox" id="includeSymbols" checked />
                 <label for="includeSymbols">SYMBOLS (!@#)</label>
             </div>
-        </div>
+        </section>
 
-        <div class="action-buttons">
-            <button id="generateBtn">Generate Strong Password</button>
-            <button id="copyBtn" title="Copy to Clipboard" style="display: none;">📋 Copy</button>
-        </div>
-        <div id="generatedPassword"></div>
+        <section aria-label="Password Generator Actions">
+            <div class="action-buttons">
+                <button id="generateBtn">Generate Strong Password</button>
+                <button id="copyBtn" title="Copy to Clipboard" style="display: none;">📋 Copy</button>
+            </div>
+            <div id="generatedPassword"></div>
+        </section>
 
-        <div id="hackerSimulation">
-            <h3>⛓ LIVE ATTACK SIMULATION ⛓</h3>
+        <section id="hackerSimulation" aria-labelledby="simulation-title">
+            <h3 id="simulation-title">⛓ LIVE ATTACK SIMULATION ⛓</h3>
             <div class="terminal-container">
                 <div class="terminal-header">
                     <span class="red-dot"></span>
@@ -100,10 +107,10 @@
                 </div>
                 <div id="crackAnimation" class="terminal-body"></div>
             </div>
-        </div>
+        </section>
 
-        <div class="explanation-section">
-            <h3>// WHAT DO THESE RESULTS MEAN?</h3>
+        <section class="explanation-section" aria-labelledby="explanation-title">
+            <h3 id="explanation-title">// WHAT DO THESE RESULTS MEAN?</h3>
             <div class="explanation-item">
                 <h4>CRACK TIME</h4>
                 <p>This estimates how long it would take an attacker to guess your password using modern, offline cracking techniques (e.g., brute-force). A longer time is better. "Centuries" is ideal.</p>
@@ -112,7 +119,15 @@
                 <h4>DARK WEB BREACH</h4>
                 <p>This checks if your exact password has appeared in a known data breach using the 'Have I Been Pwned' database. If it's "PWNED!", you should never use this password again as it's publicly available to hackers.</p>
             </div>
-        </div>
+        </section>
+
+    </main>
+
+        <section class="embed-section">
+            <h3>// EMBED THIS WIDGET ON YOUR SITE //</h3>
+            <p>Want to help your users create stronger passwords? Copy and paste this code to embed a lightweight version of the analyzer directly on your website.</p>
+            <textarea readonly><iframe src="https://www.psa-terminal.linkpc.net/widget" style="width:100%;max-width:400px;height:90px;border:1px solid #333;border-radius:5px;" title="Password Strength Analyzer Widget"></iframe></textarea>
+        </section>
 
         <footer>
             <p>Crafted by <a href="https://github.com/CodeExplorerRay" target="_blank" rel="noopener noreferrer">CodeExplorerRay</a> | View on <a href="https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-" target="_blank" rel="noopener noreferrer">GitHub</a></p>
