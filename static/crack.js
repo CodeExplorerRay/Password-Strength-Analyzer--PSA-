@@ -188,6 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
     }
 
+    // Helper function to get a random character from a given string
+    function getRandomChar(charset) {
+        const randomValues = new Uint32Array(1);
+        window.crypto.getRandomValues(randomValues);
+        return charset[randomValues[0] % charset.length];
+    }
     // --- Client-Side Password Generator ---
     function generateSecurePasswordClientSide(options) {
         const { length, uppercase, numbers, symbols } = options; // Get generator options
