@@ -47,10 +47,6 @@ def hash_password(password):
 def home():
     return render_template('index.html')
 
-@app.route('/widget')
-def widget():
-    return render_template('widget.html')
-
 @app.route('/check-breach', methods=['POST'])
 def check_breach():
     password = request.form['password']
