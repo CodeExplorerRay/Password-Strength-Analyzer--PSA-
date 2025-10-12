@@ -117,8 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateBreachUI(breachResponse.breach);
         } catch (error) {
             console.error('Breach check failed:', error);
-            UI.breachStatusSpan.textContent = 'Error';
-            UI.breachStatusSpan.className = 'error';
             UI.breachStatusSpan.textContent = 'BREACH CHECK SERVICE UNAVAILABLE';
             UI.breachStatusSpan.className = 'pwned'; // Reuse 'pwned' style for error state
         }
