@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetUI() {
-        UI.favicon.href = '/static/favicon.ico'; // Reset favicon
+        UI.favicon.href = '/static/android-chrome-192x192.png?v=2'; // Reset favicon with cache buster
         UI.strengthMeter.querySelectorAll('.strength-segment').forEach(segment => {
             segment.classList.remove('active');
             segment.style.backgroundColor = 'var(--color-bg-meter)';
