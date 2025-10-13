@@ -347,7 +347,7 @@ button:hover {
     background-color: transparent;
     border: 1px solid var(--color-border);
     padding: 20px;
-    margin: 20px 0;
+    margin: 40px 0;
     text-align: left;
     position: relative;
 }
@@ -447,7 +447,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #results {
-    margin: 20px 0;
+    margin: 40px 0;
     padding: 15px;
     text-align: left;
     background-color: var(--color-bg-panel);
@@ -604,7 +604,7 @@ input[type="range"]::-webkit-slider-thumb {
 footer {
     margin-top: 50px;
     padding-top: 20px;
-    border-top: 1px dashed var(--color-border);
+    border-top: 1px solid var(--color-border);
     text-align: center;
     color: var(--color-text-dim);
     font-size: 14px;
@@ -623,12 +623,23 @@ footer a:hover {
 
 /* --- Disclaimer Section --- */
 .disclaimer-section {
-    margin-top: 40px;
-    padding-top: 20px;
+    margin: 40px 0;
     padding: 20px;
-    border: 1px dashed var(--color-danger);
+    border: 1px solid var(--color-danger);
     background-color: rgba(255, 95, 86, 0.05); /* Faint red background */
+    position: relative;
     text-align: left;
+
+}
+
+.disclaimer-section::before {
+    content: '// SYSTEM DIRECTIVE: USAGE POLICY //';
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background: var(--color-bg);
+    padding: 0 10px;
+    color: var(--color-accent);
 }
 
 .disclaimer-section h3 {
@@ -667,7 +678,7 @@ footer a:hover {
     text-align: center;
     padding: 20px 10px;
     margin-bottom: 40px;
-    border: 1px dashed var(--color-border);
+    border: 1px solid var(--color-border);
     background-color: var(--color-bg-input);
 }
 
