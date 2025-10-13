@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic SEO -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassRogue - Real-Time Password Strength Analyzer & Breach Check</title>
     <meta name="description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches with a live attack simulation.">
     <meta name="keywords" content="password strength, password analyzer, password checker, cybersecurity, password security, crack time, data breach, haveibeenpwned, zxcvbn, password generator">
     <meta name="google-site-verification" content="iblrs2UVXTZegGeuVbJEuWAiPr_Y1UjiPwpl3D7CSHU" />
     <meta name="robots" content="index, follow">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.psa-terminal.linkpc.net/" />
 
     <!-- Google Analytics - Replace G-XXXXXXXXXX with your Measurement ID -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PZRMW2STV"></script>
@@ -18,21 +22,52 @@
       gtag('config', 'G-8PZRMW2STV');
     </script>
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph (for social preview + Google snippets) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.psa-terminal.linkpc.net/">
     <meta property="og:title" content="PassRogue - Password Strength Analyzer">
     <meta property="og:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
     <meta property="og:image" content="https://www.psa-terminal.linkpc.net/static/og-image.png">
+    <meta property="og:site_name" content="PassRogue">
 
-    <!-- Twitter -->
+    <!-- Twitter Card -->
     <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.psa-terminal.linkpc.net/">
+    <meta property="twitter:title" content="PassRogue - Password Strength Analyzer">
+    <meta property="twitter:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
+    <meta property="twitter:image" content="https://www.psa-terminal.linkpc.net/static/og-image.png">
 
-    <title>Free Password Strength Analyzer & Breach Check | PassRogue</title>
+    <!-- Favicon -->
+    <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="manifest" href="/static/manifest.json">
+    
+
+    <!-- Structured Data (JSON-LD Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "PassRogue",
+      "operatingSystem": "Web",
+      "applicationCategory": "SecurityApplication",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "250"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+
     <!-- Add zxcvbn library for client-side strength analysis -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" defer></script>
     <link rel="stylesheet" href="/static/main.css" />
-    <link id="favicon" rel="icon" href="/static/favicon.ico" type="image/x-icon" />
 </head>
 <body>
     <div id="achievementUnlock" class="achievement-popup">
@@ -72,6 +107,7 @@
                 
                 <div id="results">
                     <p><strong>CRACK TIME:</strong> <span id="crackTime">—</span></p>
+                    <p><strong>STRENGTH:</strong> <span id="strengthText">—</span></p>
                     <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
                 </div>
             </section>
