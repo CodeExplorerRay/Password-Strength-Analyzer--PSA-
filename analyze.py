@@ -72,6 +72,11 @@ def serve_sitemap():
     # Correctly serve sitemap.xml from the static directory
     return send_from_directory(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'), 'sitemap.xml')
 
+@app.route('/ads.txt')
+def serve_ads_txt():
+    # Correctly serve ads.txt from the project's root directory
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'ads.txt')
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
