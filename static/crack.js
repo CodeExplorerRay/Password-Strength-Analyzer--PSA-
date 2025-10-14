@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let simulationTimeout;
 
     // --- Gamification State ---
-    let analysisCount = parseInt(localStorage.getItem('passrogue_analysisCount') || '0');
-    let achievements = JSON.parse(localStorage.getItem('passrogue_achievements') || '[]');
+    let analysisCount = parseInt(localStorage.getItem('securepass_analysisCount') || '0');
+    let achievements = JSON.parse(localStorage.getItem('securepass_achievements') || '[]');
 
     // --- Main Event Listeners ---
     UI.passwordInput.addEventListener('input', () => {
@@ -112,11 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Social Sharing ---
     window.shareResult = function() {
         const passwordStrength = document.title;
-        const shareText = `I just tested a password on PassRogue and the result was: ${passwordStrength}. How strong is yours?`;
+        const shareText = `I just tested a password on SecurePass and the result was: ${passwordStrength}. How strong is yours?`;
         const shareUrl = window.location.href;
 
         if (navigator.share) {
-            navigator.share({ title: 'PassRogue Password Analysis', text: shareText, url: shareUrl });
+            navigator.share({ title: 'SecurePass Password Analysis', text: shareText, url: shareUrl });
         } else {
             // Fallback for desktop
             const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Gamification Hooks ---
         analysisCount++;
-        localStorage.setItem('passrogue_analysisCount', analysisCount);
+        localStorage.setItem('securepass_analysisCount', analysisCount);
         checkAchievements(strength);
 
         startHackerSimulation(strength);
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const run = async () => {
-            await typeLine('> Initializing PassRogue Cracker v3.0...', '', 0, 10);
+            await typeLine('> Initializing SecurePass Cracker v3.0...', '', 0, 10);
             await typeLine('> GPUs detected: 1 | Activating device #1: NVIDIA RTX 4090', 'sim-progress', 200);
             await typeLine(`> Target Hash Type..: NTLM (guesses: ${Math.round(Math.pow(10, guesses_log10)).toLocaleString()})`, 'sim-progress', 400);
 
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const [key, achievement] of Object.entries(achievementMap)) {
             if (achievement.condition && !achievements.includes(key)) {
                 achievements.push(key);
-                localStorage.setItem('passrogue_achievements', JSON.stringify(achievements));
+                localStorage.setItem('securepass_achievements', JSON.stringify(achievements));
                 showAchievement(achievement.text);
                 break; // Show one achievement at a time
             }
@@ -493,9 +493,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setDynamicTerminalTitle();
 
     // --- VOID-ENHANCEMENT PROTOCOL: Quick Wins ---
-    let sessionCount = parseInt(localStorage.getItem('passrogue_sessions')) || 0;
+    let sessionCount = parseInt(localStorage.getItem('securepass_sessions')) || 0;
     sessionCount++;
-    localStorage.setItem('passrogue_sessions', sessionCount);
+    localStorage.setItem('securepass_sessions', sessionCount);
 
     if (sessionCount === 1) { // First visit hook
         setTimeout(() => {

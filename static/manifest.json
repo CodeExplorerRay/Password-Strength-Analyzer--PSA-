@@ -1,6 +1,6 @@
 {
-  "name": "PassRogue",
-  "short_name": "PassRogue",
+  "name": "SecurePass",
+  "short_name": "SecurePass",
   "description": "Free password strength analyzer and dark web breach checker.",
   "start_url": "/",
   "display": "standalone",

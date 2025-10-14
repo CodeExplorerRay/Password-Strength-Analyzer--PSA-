@@ -4,7 +4,7 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   </a>
-  <a href="https://www.psa-terminal.linkpc.net/">
+  <a href="https://www.securepass.linkpc.net/">
     <img src="https://img.shields.io/badge/Status-Online-brightgreen" alt="Live Demo">
   </a>
 </p>
@@ -85,7 +85,8 @@ To get a local copy up and running, follow these simple steps.
 
 ## 🌐 Live Demo
 Check out the live version:  
-[![Live Demo](https://img.shields.io/badge/Status-Online-brightgreen)](https://www.psa-terminal.linkpc.net/)
+**Primary:** [www.securepass.linkpc.net](https://www.securepass.linkpc.net/)  
+**Fallback:** [password-strength-analyzer-psa.vercel.app](https://password-strength-analyzer-psa.vercel.app/)
 
 ## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-/blob/main/License) file for details.
