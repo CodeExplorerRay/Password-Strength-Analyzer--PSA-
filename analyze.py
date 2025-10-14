@@ -25,9 +25,11 @@ def is_password_pwned(password):
     sha1_hash = hashlib.sha1(password.encode()).hexdigest().upper()
     prefix, suffix = sha1_hash[:5], sha1_hash[5:]
     try:
-        response = requests.get(f"{HIBP_API_URL}{prefix}")
-        return suffix in response.text
-    except:
+        response = requests.get(f"{HIBP_API_URL}{prefix}", timeout=5) # Add a timeout
+        response.raise_for_status() # Raise an exception for bad status codes (4xx or 5xx)
+        # The HIBP API returns a list of hashes. We need to check if our suffix is in any of the lines.
+        return any(line.startswith(suffix) for line in response.text.splitlines())
+    except requests.RequestException:
         return False
 
 # PBKDF2 Hash (For Demo)
