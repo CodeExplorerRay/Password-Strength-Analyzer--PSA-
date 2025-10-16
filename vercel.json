@@ -24,12 +24,8 @@
       "dest": "/templates/$1"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "analyze.py"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/templates/$1"
+      "dest": "analyze.py"
     }
   ]
 }
