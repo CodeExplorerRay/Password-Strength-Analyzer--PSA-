@@ -188,7 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetUI() {
-        UI.favicon.href = '/static/favicon.ico?v=5'; // Reset favicon with cache buster
+        if (UI.favicon) {
+            UI.favicon.href = '/static/favicon.ico?v=5'; // Reset favicon with cache buster
+        }
         UI.strengthMeter.querySelectorAll('.strength-segment').forEach(segment => {
             segment.classList.remove('active');
             segment.style.backgroundColor = 'var(--color-bg-meter)';
