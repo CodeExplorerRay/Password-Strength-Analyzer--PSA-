@@ -50,7 +50,7 @@ To get a local copy up and running, follow these simple steps.
     ```
 3.  **Install the required Python packages:**
     ```sh
-    pip install Flask requests cryptography
+    pip install -r requirements.txt
     ```
 4.  **Run the Flask application:**
     ```sh

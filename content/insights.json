@@ -1,0 +1,34 @@
+[
+  {
+    "slug": "strong-passwords-2025",
+    "title": "Why Strong Passwords Still Matter in 2025",
+    "description": "Even with biometrics and passkeys, strong passwords remain the core of security. Discover why they are your first line of defense.",
+    "date": "2025-01-05",
+    "tags": ["Passwords", "Security Basics"],
+    "thumbnail": "/static/images/insights/post1.jpg"
+  },
+  {
+    "slug": "anatomy-of-a-phishing-attack",
+    "title": "Anatomy of a Phishing Attack",
+    "description": "We dissect a real-world phishing email, revealing the subtle tricks scammers use to steal your credentials and how to spot them.",
+    "date": "2024-12-18",
+    "tags": ["Phishing", "Scams"],
+    "thumbnail": "/static/images/insights/post2.jpg"
+  },
+  {
+    "slug": "mfa-is-non-negotiable",
+    "title": "MFA is Non-Negotiable: Securing Your Digital Life",
+    "description": "Multi-Factor Authentication (MFA) is the single most effective step to secure your accounts. Learn how to enable it everywhere.",
+    "date": "2024-11-30",
+    "tags": ["MFA", "Authentication"],
+    "thumbnail": "/static/images/insights/post3.jpg"
+  },
+  {
+    "slug": "public-wifi-risks",
+    "title": "The Hidden Dangers of Public Wi-Fi",
+    "description": "Using free Wi-Fi at cafes or airports? You could be exposing your data to attackers. Here’s how to stay safe on public networks.",
+    "date": "2024-11-15",
+    "tags": ["Data Breaches", "Security Basics"],
+    "thumbnail": "/static/images/insights/post4.jpg"
+  }
+]

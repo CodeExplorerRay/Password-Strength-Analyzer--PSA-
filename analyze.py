@@ -1,26 +1,15 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import requests
 import hashlib
-import secrets
-import string
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.backends import default_backend
 import os
+import yaml
+from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # HIBP API (Breach Check)
 HIBP_API_URL = "https://api.pwnedpasswords.com/range/"
 
-# Generate Military-Grade Password
-def generate_password(length=16, include_special=True):
-    chars = string.ascii_letters + string.digits
-    if include_special:
-        chars += string.punctuation
-    return ''.join(secrets.choice(chars) for _ in range(length))
-
-# Check Password Breach (HIBP)
 def is_password_pwned(password):
     sha1_hash = hashlib.sha1(password.encode()).hexdigest().upper()
     prefix, suffix = sha1_hash[:5], sha1_hash[5:]
@@ -32,22 +21,54 @@ def is_password_pwned(password):
     except requests.RequestException:
         return False
 
-# PBKDF2 Hash (For Demo)
-def hash_password(password):
-    salt = os.urandom(16)
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=100000,
-        backend=default_backend()
-    )
-    return kdf.derive(password.encode())
-
 # Flask Routes
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/insights')
+def insights():
+    return render_template('insights.html')
+
+@app.route('/insight-post.html')
+def insight_post():
+    return render_template('insight-post.html')
+
+@app.route('/api/insights')
+def get_insights_data():
+    """
+    Scans the /content directory, parses frontmatter from .md files,
+    and returns a sorted list of post metadata as JSON.
+    """
+    posts = []
+    content_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'content')
+    for root, _, files in os.walk(content_root):
+        for filename in files:
+            if filename.endswith('.md'):
+                filepath = os.path.join(root, filename)
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    # Split content at the second '---' to get the frontmatter
+                    try:
+                        _, frontmatter_str, _ = content.split('---', 2)
+                        metadata = yaml.safe_load(frontmatter_str)
+                        # Create a slug that includes the subdirectory path
+                        relative_path = os.path.relpath(filepath, content_root)
+                        metadata['slug'] = os.path.splitext(relative_path)[0].replace('\\', '/')
+                        posts.append(metadata)
+                    except (ValueError, yaml.YAMLError) as e:
+                        print(f"Warning: Could not parse frontmatter for {filename}: {e}")
+    # Sort posts by date, oldest first (chronological order)
+    posts.sort(key=lambda p: datetime.strptime(p.get('date', '1970-01-01'), '%Y-%m-%d'))
+    return jsonify(posts)
+
+@app.route('/content/<path:filename>')
+def serve_content(filename):
+    return send_from_directory('content', filename)
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
 @app.route('/check-breach', methods=['POST'])
 def check_breach():
@@ -57,12 +78,6 @@ def check_breach():
 
     breach = is_password_pwned(password)
     return jsonify({"breach": breach})
-
-@app.route('/generate-password', methods=['GET'])
-def get_generated_password():
-    # It's better to generate passwords on the client, but if a backend endpoint is desired, this is how.
-    new_password = generate_password()
-    return jsonify({"password": new_password})
 
 @app.route('/robots.txt')
 def serve_robots():

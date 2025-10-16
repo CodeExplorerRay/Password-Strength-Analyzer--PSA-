@@ -1,0 +1,43 @@
+name: Schedule Weekly Post
+
+on:
+  schedule:
+    - cron: "0 10 * * 1" # Every Monday at 10:00 UTC
+  workflow_dispatch:
+
+jobs:
+  publish_post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "SecurePass Bot"
+          git config user.email "bot@securepass.linkpc.net"
+
+      - name: Publish next scheduled post
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          SCHEDULE_DIR="content/2025/_scheduled"
+          PUBLISH_DIR="content/2025/published"
+          NEXT_FILE=$(find "$SCHEDULE_DIR" -type f -name "*.md" | sort | head -n 1)
+          if [ -n "$NEXT_FILE" ]; then
+            echo "Publishing $NEXT_FILE"
+            mkdir -p "$PUBLISH_DIR/$(basename $(dirname "$NEXT_FILE"))"
+            mv "$NEXT_FILE" "$PUBLISH_DIR/$(basename $(dirname "$NEXT_FILE"))/"
+            git add -A
+            git commit -m "📰 Auto-publish: $(basename "$NEXT_FILE")" || echo "No changes to commit"
+            git push https://$GH_TOKEN@github.com/${{ github.repository }} HEAD:main
+          else
+            echo "No scheduled posts found."
+          fi
+
+      - name: Trigger Vercel Deploy Hook (optional)
+        if: env.VERCEL_HOOK_URL != ''
+        run: |
+          curl -X POST "$VERCEL_HOOK_URL"
+        env:
+          VERCEL_HOOK_URL: ${{ secrets.VERCEL_HOOK_URL }}

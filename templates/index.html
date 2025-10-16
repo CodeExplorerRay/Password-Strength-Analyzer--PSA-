@@ -1,59 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Basic SEO -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecurePass - Real-Time Password Strength Analyzer & Breach Check</title>
-    <meta name="description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches with a live attack simulation.">
-    <meta name="keywords" content="password strength, password analyzer, password checker, cybersecurity, password security, crack time, data breach, haveibeenpwned, zxcvbn, password generator">
-    <meta name="google-site-verification" content="iblrs2UVXTZegGeuVbJEuWAiPr_Y1UjiPwpl3D7CSHU" />
-    <meta name="google-adsense-account" content="ca-pub-2731444187834560">
-    <meta name="robots" content="index, follow">
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.securepass.linkpc.net/" />
+{% extends "base.html" %}
 
-    <!-- Google Analytics - Replace G-XXXXXXXXXX with your Measurement ID -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PZRMW2STV"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+{% block title %}SecurePass - Real-Time Password Strength Analyzer & Breach Check{% endblock %}
 
-      gtag('config', 'G-8PZRMW2STV');
-    </script>
-
-    <!-- Vercel Analytics -->
-    <script src="/_vercel/insights/script.js" defer></script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2731444187834560"
-     crossorigin="anonymous"></script>
-
-    <!-- Open Graph (for social preview + Google snippets) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.securepass.linkpc.net/">
-    <meta property="og:title" content="SecurePass - Password Strength Analyzer">
-    <meta property="og:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
-    <meta property="og:image" content="https://www.securepass.linkpc.net/static/og-image.png">
-    <meta property="og:site_name" content="SecurePass">
-
-    <!-- Twitter Card -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.securepass.linkpc.net/">
-    <meta property="twitter:title" content="SecurePass - Password Strength Analyzer">
-    <meta property="twitter:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
-    <meta property="twitter:image" content="https://www.securepass.linkpc.net/static/og-image.png">
-
-    <!-- Favicon -->
-    <link id="favicon" rel="icon" href="./static/favicon.ico?v=5">
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=2">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=2">
-    <link rel="manifest" href="/static/manifest.json?v=2">
-    
-
-    <!-- Structured Data (JSON-LD Schema) -->
+{% block head_extra %}
+    <!-- Structured Data (JSON-LD Schema) for the main page -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -72,29 +22,9 @@
       }
     }
     </script>
+{% endblock %}
 
-    <!-- Add zxcvbn library for client-side strength analysis -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-8vAFTMgddARhZ1fBCRF94GUAGi+h9I2Gq3MAJ56wBCx9oB4L9p/0JllCRGUR5QmbzOaVLrM9Gq3iIM1LP3pT7A==" crossorigin="anonymous" defer></script>
-    <link rel="stylesheet" href="/static/main.css" />
-</head>
-<body>
-    <div id="achievementUnlock" class="achievement-popup">
-        <div class="achievement-icon">🏆</div>
-        <div class="achievement-text"></div>
-    </div>
-    <div class="watermark"></div>
-    <header class="site-header">
-        <div class="header-title">
-            <img src="/static/gptimage.png" alt="SecurePass Brand Logo" class="header-logo">
-            <span class="brand-name">SecurePass</span>
-        </div>
-        <div class="header-status">
-            <span>SYSTEM STATUS:</span>
-            <span class="status-light status-online"></span>
-            <span>ONLINE</span>
-        </div>
-    </header>
-    <main class="container">
+{% block content %}
         <section class="hero-section">
             <h1>Know How Strong Your Password Really Is — in Real Time</h1>
             <p class="subheadline">Simulate attack vectors, check for data leaks, and strengthen your credentials instantly.</p>
@@ -119,6 +49,19 @@
                     <p><strong>DARK WEB BREACH:</strong> <span id="breachStatus">—</span></p>
                 </div>
             </section>
+
+            <section id="hackerSimulation" aria-labelledby="simulation-title">
+            <h3 id="simulation-title">⛓ LIVE ATTACK SIMULATION ⛓</h3>
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <span class="red-dot"></span>
+                    <span class="yellow-dot"></span>
+                    <span class="green-dot"></span>
+                    <span id="terminalTitle" class="title">root@kali:~</span>
+                </div>
+                <div id="crackAnimation" class="terminal-body"></div>
+            </div>
+        </section>
     
             <section id="generator" class="generator-options" aria-labelledby="generator-title">
                 <h2 id="generator-title" class="sr-only">Password Generator Options</h2>
@@ -164,19 +107,6 @@
             </div>
         </section>
 
-        <section id="hackerSimulation" aria-labelledby="simulation-title">
-            <h3 id="simulation-title">⛓ LIVE ATTACK SIMULATION ⛓</h3>
-            <div class="terminal-container">
-                <div class="terminal-header">
-                    <span class="red-dot"></span>
-                    <span class="yellow-dot"></span>
-                    <span class="green-dot"></span>
-                    <span id="terminalTitle" class="title">root@kali:~</span>
-                </div>
-                <div id="crackAnimation" class="terminal-body"></div>
-            </div>
-        </section>
-
         <section class="explanation-section" aria-labelledby="explanation-title">
             <h3 id="explanation-title">// WHAT DO THESE RESULTS MEAN?</h3>
             <div class="explanation-item">
@@ -199,12 +129,8 @@
             </ul>
         </section>
 
-    </main>
+{% endblock %}
 
-        <footer>
-            <p>Crafted by <a href="https://github.com/CodeExplorerRay" target="_blank" rel="noopener noreferrer">CodeExplorerRay</a> | View on <a href="https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-" target="_blank" rel="noopener noreferrer">GitHub</a></p>
-        </footer>
-
+{% block scripts %}
     <script src="/static/crack.js"></script>
-</body>
-</html>
+{% endblock %}

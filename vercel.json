@@ -2,30 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "templates/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "static/**/*",
-      "use": "@vercel/static"
+      "src": "analyze.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
-    {
-      "src": "/favicon.ico",
-      "dest": "/static/favicon.ico"
-    },
     {
       "src": "/static/(.*)",
       "dest": "/static/$1"
     },
     {
-      "src": "/",
-      "dest": "/templates/index.html"
+      "src": "/content/(.*)",
+      "dest": "/content/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/templates/index.html"
+      "dest": "analyze.py"
     }
   ]
 }

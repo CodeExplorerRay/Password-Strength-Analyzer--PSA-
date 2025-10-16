@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}SecurePass Insights - SecurePass{% endblock %}
+
+{% block head_extra %}
+    <!-- SEO and Social Sharing Meta Tags for Insights Hub -->
+    <meta name="description" content="Explore the SecurePass Insights hub for expert articles, tips, and real-world stories about password security, data breaches, and digital hygiene.">
+    <link rel="canonical" href="https://www.securepass.linkpc.net/insights" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="SecurePass Insights - A Security Knowledge Hub" />
+    <meta property="og:description" content="Expert articles on password security, data breaches, and digital hygiene." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.securepass.linkpc.net/insights" />
+    <meta property="og:image" content="https://www.securepass.linkpc.net/static/og-image.png" />
+    <script src="/static/insights.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<!-- Main Insights Section -->
+<section class="blog-section">
+    <h1 class="page-title">// SecurePass Insights</h1>
+    <p class="subheadline">Insights, tips, and real-world stories about password security and digital hygiene.</p>
+    
+    <!-- Search Controls -->
+    <div class="insights-controls">
+        <div class="search-wrapper">
+            <input type="search" id="insightsSearch" placeholder="Search security insights…" autocomplete="off">
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+    </div>
+    
+    <!-- Tag Filters -->
+    <div id="tagFilters" class="tag-filters">
+        <!-- Filter buttons will be dynamically inserted here by JavaScript -->
+    </div>
+    
+    <!-- Animated Grid for Posts -->
+    <div id="insightsGrid" class="insights-grid">
+        <!-- Article cards will be dynamically inserted here by JavaScript -->
+    </div>
+
+    <!-- Pagination Controls -->
+    <div id="paginationContainer" class="pagination-container"></div>
+
+</section>
+{% endblock %}

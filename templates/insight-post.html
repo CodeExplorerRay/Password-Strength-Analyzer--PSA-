@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}SecurePass Insight{% endblock %}
+
+{% block head_extra %}
+    <!-- SEO and Social Sharing Meta Tags (to be updated by JS) -->
+    <meta name="description" content="An in-depth security article from the SecurePass Insights hub.">
+    <link rel="canonical" href="https://www.securepass.linkpc.net/insights" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="SecurePass Insight" />
+    <meta property="og:description" content="An in-depth security article from the SecurePass Insights hub." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://www.securepass.linkpc.net/insights" />
+    <meta property="og:image" content="https://www.securepass.linkpc.net/static/og-image.png" />
+
+    <!-- Markdown parsing library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+
+    <!-- Schema.org for Blog Posting (template) -->
+    <script id="schema-template" type="application/ld+json"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Main Article Section -->
+<section class="blog-section">
+    <article id="insightPostContainer" class="blog-post-full">
+        <!-- Dynamic content will be loaded here -->
+        <div class="loading-placeholder">
+            <h1 class="post-title placeholder-glow"></h1>
+            <p class="post-meta placeholder-glow"></p>
+            <div class="post-content placeholder-glow">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Related Articles Section -->
+    <section id="relatedArticlesSection" class="related-articles-section" style="display:none;">
+        <h3 class="section-title">// Related Insights</h3>
+        <div id="relatedArticlesGrid" class="insights-grid"></div>
+    </section>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<!-- Script to load and render the specific post -->
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    // This is a simplified inline script for this specific page.
+    // In a larger app, this would be in its own file.
+    const postContainer = document.getElementById('insightPostContainer');
+    const urlParams = new URLSearchParams(window.location.search);
+    const postSlug = urlParams.get('post');
+
+    if (!postSlug) {
+        postContainer.innerHTML = `<p class="error-message">No post specified. Please return to the insights page.</p>`;
+        return;
+    }
+
+    // --- SEO & Dynamic Content Injection ---
+    try {
+        // 1. Fetch all posts metadata to find the current one
+        const postsResponse = await fetch('/api/insights');
+        if (!postsResponse.ok) throw new Error('Could not load insights from API.');
+        const allPosts = await postsResponse.json();
+        const postData = allPosts.find(p => p.slug === postSlug);
+
+        if (!postData) throw new Error(`Post with slug '${postSlug}' not found in metadata.`);
+
+        // 2. Fetch the specific post's Markdown content
+        const markdownResponse = await fetch(`/content/2025/published/${postSlug}.md`);
+        if (!markdownResponse.ok) throw new Error('Could not load post content.');
+        const markdownContent = await markdownResponse.text();
+        const body = markdownContent.split('---').slice(2).join('---').trim();
+        
+        // 3. Dynamically update meta tags for SEO and social sharing
+        const postUrl = `https://www.securepass.linkpc.net/insight-post.html?post=${postSlug}`;
+        document.title = `${postData.title} - SecurePass Insights`;
+        document.querySelector('meta[name="description"]').setAttribute('content', postData.description);
+        document.querySelector('link[rel="canonical"]').setAttribute('href', postUrl);
+        document.querySelector('meta[property="og:title"]').setAttribute('content', postData.title);
+        document.querySelector('meta[property="og:description"]').setAttribute('content', postData.description);
+        document.querySelector('meta[property="og:url"]').setAttribute('href', postUrl);
+        document.querySelector('meta[property="og:image"]').setAttribute('content', `https://www.securepass.linkpc.net${postData.thumbnail}`);
+
+        // 4. Inject Schema.org JSON-LD for BlogPosting
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": postData.title,
+            "description": postData.description,
+            "image": `https://www.securepass.linkpc.net${postData.thumbnail}`,
+            "datePublished": postData.date,
+            "author": {
+                "@type": "Person",
+                "name": "SecurePass Team"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "SecurePass",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.securepass.linkpc.net/static/gptimage.png"
+                }
+            }
+        };
+        document.getElementById('schema-template').textContent = JSON.stringify(schema);
+
+        // 5. Render the main post content
+        postContainer.innerHTML = `
+            <h1 class="post-title">${postData.title}</h1>
+            <p class="post-meta">Published on ${postData.date}</p>
+            <div class="post-tags">
+                ${postData.tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
+            </div>
+            <div class="post-content">
+                ${marked.parse(body)}
+            </div>
+            <a href="/insights" class="back-to-blog">&lt;&lt; Back to SecurePass Insights</a>
+        `;
+
+        // 6. Find and render related articles
+        const relatedArticles = allPosts.filter(p => {
+            return p.slug !== postSlug && p.tags.some(tag => postData.tags.includes(tag));
+        }).slice(0, 3); // Get up to 3 related articles
+
+        const relatedGrid = document.getElementById('relatedArticlesGrid');
+        const relatedSection = document.getElementById('relatedArticlesSection');
+
+        if (relatedArticles.length > 0) {
+            relatedGrid.innerHTML = relatedArticles.map(relatedPost => `
+                <article class="post-summary">
+                    <a href="/insight-post.html?post=${relatedPost.slug}" class="post-thumbnail-link">
+                        <img src="${relatedPost.thumbnail}" alt="${relatedPost.title}" class="post-thumbnail" loading="lazy">
+                    </a>
+                    <div class="post-content-wrapper">
+                        <div class="post-tags">
+                            ${relatedPost.tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
+                        </div>
+                        <h2><a href="/insight-post.html?post=${relatedPost.slug}">${relatedPost.title}</a></h2>
+                        <p class="post-description">${relatedPost.description}</p>
+                        <div class="post-footer">
+                            <span class="post-date">${relatedPost.date}</span>
+                            <a href="/insight-post.html?post=${relatedPost.slug}" class="read-more-link">Read More &gt;&gt;</a>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+            relatedSection.style.display = 'block';
+        }
+
+        // Analytics Tracking for viewing a post
+        if (typeof gtag === 'function') {
+            gtag('event', 'view_insight', { 'post_title': postData.title });
+        }
+
+    } catch (error) {
+        console.error('Error loading post:', error);
+        postContainer.innerHTML = `<p class="error-message">Could not load the requested insight. It may have been moved or deleted.</p> <a href="/insights" class="back-to-blog">&lt;&lt; Back to SecurePass Insights</a>`;
+    }
+});
+</script>
+{% endblock %}

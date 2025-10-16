@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Analyzer Page -->
   <url>
     <loc>https://www.securepass.linkpc.net/</loc>
     <lastmod>2024-10-14</lastmod>
     <priority>1.00</priority>
+  </url>
+  <!-- Insights Hub Page -->
+  <url>
+    <loc>https://www.securepass.linkpc.net/insights</loc>
+    <lastmod>2025-01-05</lastmod>
+    <priority>0.90</priority>
+  </url>
+  <!-- Individual Insight Posts -->
+  <url>
+    <loc>https://www.securepass.linkpc.net/insight-post.html?post=strong-passwords-2025</loc>
+    <lastmod>2025-01-05</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.securepass.linkpc.net/insight-post.html?post=anatomy-of-a-phishing-attack</loc>
+    <lastmod>2024-12-18</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.securepass.linkpc.net/insight-post.html?post=mfa-is-non-negotiable</loc>
+    <lastmod>2024-11-30</lastmod>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.securepass.linkpc.net/insight-post.html?post=public-wifi-risks</loc>
+    <lastmod>2024-11-15</lastmod>
+    <priority>0.80</priority>
   </url>
 </urlset>

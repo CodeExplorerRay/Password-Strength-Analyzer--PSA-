@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic SEO -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SecurePass - Real-Time Password Strength Analyzer & Breach Check{% endblock %}</title>
+    <meta name="description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches with a live attack simulation.">
+    <meta name="keywords" content="password strength, password analyzer, password checker, cybersecurity, password security, crack time, data breach, haveibeenpwned, zxcvbn, password generator">
+    <meta name="google-site-verification" content="iblrs2UVXTZegGeuVbJEuWAiPr_Y1UjiPwpl3D7CSHU" />
+    <meta name="google-adsense-account" content="ca-pub-2731444187834560">
+    <meta name="robots" content="index, follow">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://www.securepass.linkpc.net/" />
+
+    <!-- Google Analytics - Replace G-XXXXXXXXXX with your Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PZRMW2STV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-8PZRMW2STV');
+    </script>
+
+    <!-- Vercel Analytics -->
+    <script src="/_vercel/insights/script.js" defer></script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2731444187834560"
+     crossorigin="anonymous"></script>
+
+    <!-- Open Graph (for social preview + Google snippets) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.securepass.linkpc.net/">
+    <meta property="og:title" content="SecurePass - Password Strength Analyzer">
+    <meta property="og:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
+    <meta property="og:image" content="https://www.securepass.linkpc.net/static/og-image.png">
+    <meta property="og:site_name" content="SecurePass">
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.securepass.linkpc.net/">
+    <meta property="twitter:title" content="SecurePass - Password Strength Analyzer">
+    <meta property="twitter:description" content="A real-time password security assessment tool that evaluates password strength, estimates crack time, and checks against known data breaches.">
+    <meta property="twitter:image" content="https://www.securepass.linkpc.net/static/og-image.png">
+
+    <!-- Favicon -->
+    <link id="favicon" rel="icon" href="/static/favicon.ico?v=5">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png?v=2">
+    <link rel="manifest" href="/static/manifest.json?v=2">
+    
+    <link rel="stylesheet" href="/static/main.css" />
+    <link rel="stylesheet" href="/static/animations.css" />
+    <!-- zxcvbn library loaded globally with correct integrity hash -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"
+            integrity="sha256-Znf8FdJF85f1LV0JmPOob5qudSrns8pLPZ6qkd/+F0o="
+            crossorigin="anonymous"></script>
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div id="achievementUnlock" class="achievement-popup">
+        <div class="achievement-icon">🏆</div>
+        <div class="achievement-text"></div>
+    </div>
+    <div class="watermark"></div>
+    <header class="site-header">
+        <div class="header-title">
+            <a href="/" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="/static/gptimage.png" alt="SecurePass Brand Logo" class="header-logo">
+                <span class="brand-name">SecurePass</span>
+            </a>
+        </div>
+        <nav class="header-nav">
+            <a href="/insights" class="brand-name">SecurePass Insights</a>
+        </nav>
+        <div class="header-status">
+            <span>SYSTEM STATUS:</span>
+            <span class="status-light status-online"></span>
+            <span>ONLINE</span>
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <!-- Newsletter Signup -->
+        <section class="newsletter-signup-section" aria-labelledby="newsletter-title">
+            <h3 id="newsletter-title">Stay Updated with SecurePass Insights</h3>
+            <p>Get the latest cybersecurity updates and password protection tips directly from SecurePass.</p>
+            <form class="newsletter-form">
+                <label for="newsletterEmail" class="sr-only">Email Address</label>
+                <input type="email" id="newsletterEmail" placeholder="your.email@example.com" disabled>
+                <button type="submit" disabled>Subscribe</button>
+            </form>
+        </section>
+        <!-- End Newsletter Signup -->
+        <p>Crafted by <a href="https://github.com/CodeExplorerRay" target="_blank" rel="noopener noreferrer">CodeExplorerRay</a> | View on <a href="https://github.com/CodeExplorerRay/Password-Strength-Analyzer--PSA-" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" title="Go to top">&uarr;</button>
+    <!-- End Scroll to Top Button -->
+
+    {% block scripts %}{% endblock %}
+
+    <!-- Global Site Scripts -->
+    <script src="/static/interactions.js" defer></script>
+    <script>
+        // Scroll-to-top button logic
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        if (scrollToTopBtn) {
+            window.onscroll = () => {
+                if (document.body.scrollTop > window.innerHeight / 2 || document.documentElement.scrollTop > window.innerHeight / 2) {
+                    scrollToTopBtn.style.display = "block";
+                } else {
+                    scrollToTopBtn.style.display = "none";
+                }
+            };
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>

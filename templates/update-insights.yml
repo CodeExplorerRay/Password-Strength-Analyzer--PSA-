@@ -1,0 +1,62 @@
+# .github/workflows/update-insights.yml
+
+name: Weekly SecurePass Insight Update
+
+on:
+  # Schedule to run every Monday at 12:00 UTC
+  schedule:
+    - cron: '0 12 * * 1'
+  # Allows you to run this workflow manually from the Actions tab for testing
+  workflow_dispatch:
+
+jobs:
+  update_insights:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository's code
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Git configuration for the commit
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      # Step 3: Generate the new Markdown file for the weekly insight
+      - name: Generate new insight file
+        run: |
+          # Set the filename based on the current date
+          FILE_DATE=$(date +'%Y-%m-%d')
+          SLUG="weekly-tip-${FILE_DATE}"
+          FILE_NAME="content/${SLUG}.md"
+          THUMBNAIL="/static/images/insights/post-default.jpg" # A default thumbnail for weekly tips
+          
+          # Create the content with YAML frontmatter and a cybersecurity tip
+          echo "---
+          title: \"Cybersecurity Tip: The Power of Password Managers\"
+          description: \"A weekly tip from SecurePass to help you stay safe online. This week, we explore why password managers are essential for modern security.\"
+          date: \"$FILE_DATE\"
+          tags: [\"Weekly Tip\", \"Password Manager\"]
+          thumbnail: \"$THUMBNAIL\"
+          ---
+          ### Why Use a Password Manager?
+          
+          In today's digital world, juggling dozens of unique, complex passwords is an impossible task for the human brain. This is where a password manager becomes your most powerful ally. It's a secure, encrypted vault that stores all your login credentials.
+          
+          Instead of remembering countless passwords, you only need to remember one: your master password. The manager does the heavy lifting by generating and auto-filling strong, unique passwords for every site you use.
+          
+          Using a password manager drastically reduces your risk of being compromised through credential stuffing attacks, where hackers use stolen passwords from one breach to try and access your other accounts. It is one of the single most effective steps you can take to secure your digital life.
+          " > $FILE_NAME
+
+      # Step 4: Commit and push the new file to the main branch
+      - name: Commit and push changes
+        run: |
+          git add content/*.md
+          # Commit only if there are changes to be staged
+          git diff --staged --quiet || git commit -m "Weekly SecurePass Insight update"
+          git push
+
+# Note: Pushing to the 'main' branch will automatically trigger a new deployment on Vercel
+# as long as your project is linked. No extra Vercel-specific steps are needed here.
