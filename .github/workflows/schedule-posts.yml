@@ -14,8 +14,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "SecurePass Bot"
-          git config user.email "bot@securepass.linkpc.net"
+          git config --global user.name "SecurePass Bot"
+          git config --global user.email "bot@securepass.linkpc.net"
 
       - name: Publish next scheduled post
         env:
@@ -23,14 +23,21 @@ jobs:
         run: |
           SCHEDULE_DIR="content/2025/_scheduled"
           PUBLISH_DIR="content/2025/published"
+          
+          # Exit early if directory doesn't exist
+          if [ ! -d "$SCHEDULE_DIR" ]; then
+            echo "Schedule directory not found: $SCHEDULE_DIR"
+            exit 0
+          fi
+          
           NEXT_FILE=$(find "$SCHEDULE_DIR" -type f -name "*.md" | sort | head -n 1)
           if [ -n "$NEXT_FILE" ]; then
             echo "Publishing $NEXT_FILE"
-            mkdir -p "$PUBLISH_DIR/$(basename $(dirname "$NEXT_FILE"))"
-            mv "$NEXT_FILE" "$PUBLISH_DIR/$(basename $(dirname "$NEXT_FILE"))/"
+            mkdir -p "$PUBLISH_DIR"
+            mv "$NEXT_FILE" "$PUBLISH_DIR/"
             git add -A
             git commit -m "📰 Auto-publish: $(basename "$NEXT_FILE")" || echo "No changes to commit"
-            git push https://$GH_TOKEN@github.com/${{ github.repository }} HEAD:main
+            git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
           else
             echo "No scheduled posts found."
           fi
